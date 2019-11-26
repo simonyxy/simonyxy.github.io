@@ -8,15 +8,15 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>5.【Lua面向对象设计——BaseClass】 | Simon&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="下面我们来看一下BaseClass–保存类类型的虚表–_class的结构如下：_class = { Class_A = vtbl_A, Class_B = vtbl_B}local _class = {}  –BaseClass(super) –函数功能：创建一个super类的子类类型 –子类类型实现了New方法、设置了当前类的元表（包括index函数和newindex函数，用于索引操作，该操作实">
+  <meta name="description" content="下面我们来看一下BaseClass–保存类类型的虚表–_class的结构如下：_class = { Class_A = vtbl_A, Class_B = vtbl_B}local _class = {}  –BaseClass(super) –函数功能：创建一个super类的子类类型 –子类类型实现了New方法、设置了当前类的元表（包括index函数和newindex函数，用于索引操作，该操">
 <meta name="keywords" content="lua继承">
 <meta property="og:type" content="article">
 <meta property="og:title" content="5.【Lua面向对象设计——BaseClass】">
 <meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;26&#x2F;lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--BaseClass&#x2F;index.html">
 <meta property="og:site_name" content="Simon&#39;s Blog">
-<meta property="og:description" content="下面我们来看一下BaseClass–保存类类型的虚表–_class的结构如下：_class = { Class_A = vtbl_A, Class_B = vtbl_B}local _class = {}  –BaseClass(super) –函数功能：创建一个super类的子类类型 –子类类型实现了New方法、设置了当前类的元表（包括index函数和newindex函数，用于索引操作，该操作实">
+<meta property="og:description" content="下面我们来看一下BaseClass–保存类类型的虚表–_class的结构如下：_class = { Class_A = vtbl_A, Class_B = vtbl_B}local _class = {}  –BaseClass(super) –函数功能：创建一个super类的子类类型 –子类类型实现了New方法、设置了当前类的元表（包括index函数和newindex函数，用于索引操作，该操">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2019-11-26T07:00:26.349Z">
+<meta property="og:updated_time" content="2019-11-26T07:16:09.123Z">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="/atom.xml" title="Simon&#39;s Blog" type="application/atom+xml">
@@ -169,7 +169,9 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>下面我们来看一下BaseClass<br>–保存类类型的虚表<br>–_class的结构如下：_class = { Class_A = vtbl_A, Class_B = vtbl_B}<br>local _class = {}</p>
+        <a id="more"></a>
+
+<p>下面我们来看一下BaseClass<br>–保存类类型的虚表<br>–_class的结构如下：_class = { Class_A = vtbl_A, Class_B = vtbl_B}<br>local _class = {}</p>
 <p> –BaseClass(super)<br> –函数功能：创建一个super类的子类类型<br> –子类类型实现了New方法、设置了当前类的元表（包括<strong>index函数和</strong>newindex函数，用于索引操作，该操作实现了对虚表的索引）<br> –如果是继承自父类，那么虚表的元表的索引方法将会在父类super对应的vtbl中去查找键值</p>
 <p>function BaseClass(super)<br>    – 生成一个类类型,    实际上存放类信息<br>    local class_type = {}</p>
 <pre><code>-- 在创建对象的时候自动调用
@@ -365,8 +367,8 @@ return class_type</code></pre><p>end<br>可能很多人看了之后还会有非�
     </a>
   
   
-    <a href="/2019/11/25/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E5%8D%9A%E5%AE%A2%E6%96%87%E7%AB%A0/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">我的第一篇博客文章</div>
+    <a href="/2019/11/25/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Hello World</div>
       <i class="icon-circle-right"></i>
     </a>
   

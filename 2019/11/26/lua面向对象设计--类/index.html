@@ -8,15 +8,15 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>3.【Lua面向对象设计—-类】 | Simon&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Lua不存在类的概念，每个对象定义他自己的行为并拥有自己的形状。类其实是具有相同特征的对象的抽象。每个被实例化的对象都有一些相同的属性和方法。比如，我们想让a拥有B所有的属性和方法，那怎么实现呢？我们首先想到使用之前讲过的元表，比如:setmetatable(a, {index = B})这样，对象a调用任何不存在的成员都会到对象B中查找。事实上，这里的B就是相当于类，a可以看做是B的对象。那么我">
+  <meta name="description" content="Lua不存在类的概念，每个对象定义他自己的行为并拥有自己的形状。类其实是具有相同特征的对象的抽象。每个被实例化的对象都有一些相同的属性和方法。比如，我们想让a拥有B所有的属性和方法，那怎么实现呢？我们首先想到使用之前讲过的元表，比如:setmetatable(a, {index = B})这样，对象a调用任何不存在的成员都会到对象B中查找。事实上，这里的B就是相当于类，a可以看做是B的对象。那么">
 <meta name="keywords" content="lua继承">
 <meta property="og:type" content="article">
 <meta property="og:title" content="3.【Lua面向对象设计—-类】">
 <meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;26&#x2F;lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--%E7%B1%BB&#x2F;index.html">
 <meta property="og:site_name" content="Simon&#39;s Blog">
-<meta property="og:description" content="Lua不存在类的概念，每个对象定义他自己的行为并拥有自己的形状。类其实是具有相同特征的对象的抽象。每个被实例化的对象都有一些相同的属性和方法。比如，我们想让a拥有B所有的属性和方法，那怎么实现呢？我们首先想到使用之前讲过的元表，比如:setmetatable(a, {index = B})这样，对象a调用任何不存在的成员都会到对象B中查找。事实上，这里的B就是相当于类，a可以看做是B的对象。那么我">
+<meta property="og:description" content="Lua不存在类的概念，每个对象定义他自己的行为并拥有自己的形状。类其实是具有相同特征的对象的抽象。每个被实例化的对象都有一些相同的属性和方法。比如，我们想让a拥有B所有的属性和方法，那怎么实现呢？我们首先想到使用之前讲过的元表，比如:setmetatable(a, {index = B})这样，对象a调用任何不存在的成员都会到对象B中查找。事实上，这里的B就是相当于类，a可以看做是B的对象。那么">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2019-11-26T07:00:20.471Z">
+<meta property="og:updated_time" content="2019-11-26T07:16:19.243Z">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="/atom.xml" title="Simon&#39;s Blog" type="application/atom+xml">
@@ -169,7 +169,8 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Lua不存在类的概念，每个对象定义他自己的行为并拥有自己的形状。类其实是具有相同特征的对象的抽象。每个被实例化的对象都有一些相同的属性和方法。<br>比如，我们想让a拥有B所有的属性和方法，那怎么实现呢？<br>我们首先想到使用之前讲过的元表，比如:<br>setmetatable(a, {<strong>index = B})<br>这样，对象a调用任何不存在的成员都会到对象B中查找。事实上，这里的B就是相当于类，a可以看做是B的对象。<br>那么我们拓展一下<br>Man = {name = “unknow”}<br>function Man:new (o)<br>    o = o or {}            – 如果o不存在则创建一个实例<br>    setmetatable(o, self)  –这里的self是Man<br>    self.</strong>index = self    –把index指向Man<br>    return o               –返回这个实例<br>end<br>function Man:sayHi()<br>    print(“Hi, I am “..self.name)<br>end<br>当我们调用Man:new时，self等于Man；因此我们可以直接使用Man取代self。关于继承下节会深入。有了这段代码之后，当我们创建一个Man的实例并且调用一个方法的时候，有什么发生呢？<br>a = Man:new{name = “Lee”}<br>print(a.name) –结果为Lee<br>我们来看到底发生了什么。当我们调用Man:new{name = “Lee”}时，其实相当于写 Man.new(Man, {name = “Lee”})。而现在，o = {name = “Lee”}， self = Man。也就是说o不为nil，这样，第三条语句就不起作用。之后我们绑定元表为Man, 并且让Man.<strong>index指向自己，这样，当a找不到的东西就会往Man找。<br>比如说下面：<br>a:sayHi() –结果为”Hi, I am Lee”<br>也就是说，a并没有sayHi这个方法。但是由于绑定了元表，所以a找不到sayHi会首先找Man.</strong>index，之后会再找_index所指向的表，也就是Man,而Man存在sayHi方法，它会调用它。</p>
+        <a id="more"></a>
+<p>Lua不存在类的概念，每个对象定义他自己的行为并拥有自己的形状。类其实是具有相同特征的对象的抽象。每个被实例化的对象都有一些相同的属性和方法。<br>比如，我们想让a拥有B所有的属性和方法，那怎么实现呢？<br>我们首先想到使用之前讲过的元表，比如:<br>setmetatable(a, {<strong>index = B})<br>这样，对象a调用任何不存在的成员都会到对象B中查找。事实上，这里的B就是相当于类，a可以看做是B的对象。<br>那么我们拓展一下<br>Man = {name = “unknow”}<br>function Man:new (o)<br>    o = o or {}            – 如果o不存在则创建一个实例<br>    setmetatable(o, self)  –这里的self是Man<br>    self.</strong>index = self    –把index指向Man<br>    return o               –返回这个实例<br>end<br>function Man:sayHi()<br>    print(“Hi, I am “..self.name)<br>end<br>当我们调用Man:new时，self等于Man；因此我们可以直接使用Man取代self。关于继承下节会深入。有了这段代码之后，当我们创建一个Man的实例并且调用一个方法的时候，有什么发生呢？<br>a = Man:new{name = “Lee”}<br>print(a.name) –结果为Lee<br>我们来看到底发生了什么。当我们调用Man:new{name = “Lee”}时，其实相当于写 Man.new(Man, {name = “Lee”})。而现在，o = {name = “Lee”}， self = Man。也就是说o不为nil，这样，第三条语句就不起作用。之后我们绑定元表为Man, 并且让Man.<strong>index指向自己，这样，当a找不到的东西就会往Man找。<br>比如说下面：<br>a:sayHi() –结果为”Hi, I am Lee”<br>也就是说，a并没有sayHi这个方法。但是由于绑定了元表，所以a找不到sayHi会首先找Man.</strong>index，之后会再找_index所指向的表，也就是Man,而Man存在sayHi方法，它会调用它。</p>
 <p>我们再看一个例子<br>a = Man:new()    –这次我们没有传任何的值<br>print(a.name)    –结果为”unknow”<br>也就是说其实它继承了默认值。<br>但是，我们接着看：<br>a = Man:new()<br>a.name = “Lee”</p>
 <p>b = Man:new()<br>print(b.name)     –结果为unknow,并不是”Lee”<br>也就是说所有new出来的对象，都拥有了自己的单独的属性，也就实现了我们面向对象中 类和对象的概念。</p>
 
