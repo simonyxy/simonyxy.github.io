@@ -6,15 +6,17 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Simon&#39;s Blog</title>
+  <title>1.【Lua基础——元表】 | Simon&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="记录我的游戏生涯">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Simon&#39;s Blog">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;index.html">
+  <meta name="description" content="在学习Lua面向对象设计前，我们首先得掌握一些基础知识。元表首先元表，什么是元表呢？比方说我们一下例子：t = {}print(t.a) –这里试图打印t并不存在的成员a显然，结果是nil。输出为nil的原因很简单，t中并没有a这个成员，这符合我们平时对表的认知。但对于Lua表，如果t有元表，情况就不同了。Lua的表本质其实是个类似HashMap的东西，其元素是很多的Key-Value对，如果尝试">
+<meta name="keywords" content="lua继承">
+<meta property="og:type" content="article">
+<meta property="og:title" content="1.【Lua基础——元表】">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;26&#x2F;lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--%E5%85%83%E8%A1%A8&#x2F;index.html">
 <meta property="og:site_name" content="Simon&#39;s Blog">
-<meta property="og:description" content="记录我的游戏生涯">
+<meta property="og:description" content="在学习Lua面向对象设计前，我们首先得掌握一些基础知识。元表首先元表，什么是元表呢？比方说我们一下例子：t = {}print(t.a) –这里试图打印t并不存在的成员a显然，结果是nil。输出为nil的原因很简单，t中并没有a这个成员，这符合我们平时对表的认知。但对于Lua表，如果t有元表，情况就不同了。Lua的表本质其实是个类似HashMap的东西，其元素是很多的Key-Value对，如果尝试">
 <meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2019-11-26T07:00:14.452Z">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="/atom.xml" title="Simon&#39;s Blog" type="application/atom+xml">
@@ -143,16 +145,14 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-    <article id="post-lua面向对象设计--元表" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+            <article id="post-lua面向对象设计--元表" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--%E5%85%83%E8%A1%A8/">1.【Lua基础——元表】</a>
+    <h1 class="article-title" itemprop="name">
+      1.【Lua基础——元表】
     </h1>
   
 
@@ -172,81 +172,36 @@
       
 
       
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">lua继承</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--%E5%85%83%E8%A1%A8/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/assets/img/zhifubao.jpg">
+                      <span class="reward-type">支付宝</span>
+                    </div>
+                    
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/assets/img/weixin.jpg">
+                      <span class="reward-type">微信</span>
+                    </div>
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
         </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-lua面向对象设计--面向对象基础" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E5%9F%BA%E7%A1%80/">2.【Lua面向对象设计——面向对象基础】</a>
-    </h1>
-  
-
-        
-        <a href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E5%9F%BA%E7%A1%80/" class="archive-article-date">
-  	<time datetime="2019-11-26T06:56:38.392Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-26</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>在了解了元表之后，我们可以了解一些Lua面向对象基础。<br>我们都知道c++、java等语言是面向对象语言，有类和对象的概念，而Lua一样可以通过表实现面向对象。<br>比如我们可以利用表实现以下代码：<br>Man = {}<br>Man.new = function(name)<br>    local man = {}              –创建实例<br>    man.name = name             –属性<br>    man.sayHi = function()      –方法<br>        print(“Hi,I’m “..man.name)<br>    end<br>    return man<br>end</p>
-<p>Lee = Man.new(“Lee”)<br>Lee.sayHi()                     –结果：Hi,I’m Lee<br>上述代码看起来简单易懂，它实现了类似于c++、Java new的功能。但是事实上这样写还不完整。<br>我们每次调用sayHi()函数的时候都必须写Lee，当我们自己给Lee添加一个方法时，也必须在方法和属性名前写Lee,这会非常不方便，尤其是后面讲到的继承<br>于是我们想到像C++/java那样拥有this,而我们Lua常用的是self。<br>比如一个例子：<br>Account = {balance = 0}<br>function Account.withdraw (v)<br>Account.balance = Account.balance - v<br>end<br>改写后就是：<br>function Account.withdraw (self, v)<br>    self.balance = self.balance - v<br>end<br>其实就是在接口里添加多一个self。<br>我们可以这样调用：<br>a1 = Account; Account = nil<br>…<br>a1.withdraw(a1, 100.00)<br>当然，有的同学就会提出，这个a1看着别扭，每次调用我都要传一个自己进去。能不能像C++、java那样隐藏起来？行的，这没问题，Lua也实现了类似的机制。Lua提供了通过使用冒号操作符来隐藏这个参数的声明。我们可以重写上面的代码：<br>function Account:withdraw (v)              –等效于function Account.withdraw (self,v)<br>    self.balance = self.balance - v<br>end</p>
-<p>这样，调用的时候就变成：<br>a:withdraw(100.00)   –等效于a.（a,100.00）<br>这样，我们写代码就方便多了</p>
-
-      
-
       
     </div>
     <div class="article-info article-info-index">
@@ -266,16 +221,75 @@
       
 
       
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E5%9F%BA%E7%A1%80/">展开全文 >></a>
-        </p>
-      
 
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--%E5%85%83%E8%A1%A8/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
       
       <div class="clearfix"></div>
     </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+  
+    <a href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E5%9F%BA%E7%A1%80/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">2.【Lua面向对象设计——面向对象基础】</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
 
 <aside class="wrap-side-operation">
     <div class="mod-side-operation">
@@ -290,449 +304,32 @@
         </div>
         
         
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-lua面向对象设计--类" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--%E7%B1%BB/">3.【Lua面向对象设计—-类】</a>
-    </h1>
-  
-
-        
-        <a href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--%E7%B1%BB/" class="archive-article-date">
-  	<time datetime="2019-11-26T06:56:38.388Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-26</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Lua不存在类的概念，每个对象定义他自己的行为并拥有自己的形状。类其实是具有相同特征的对象的抽象。每个被实例化的对象都有一些相同的属性和方法。<br>比如，我们想让a拥有B所有的属性和方法，那怎么实现呢？<br>我们首先想到使用之前讲过的元表，比如:<br>setmetatable(a, {<strong>index = B})<br>这样，对象a调用任何不存在的成员都会到对象B中查找。事实上，这里的B就是相当于类，a可以看做是B的对象。<br>那么我们拓展一下<br>Man = {name = “unknow”}<br>function Man:new (o)<br>    o = o or {}            – 如果o不存在则创建一个实例<br>    setmetatable(o, self)  –这里的self是Man<br>    self.</strong>index = self    –把index指向Man<br>    return o               –返回这个实例<br>end<br>function Man:sayHi()<br>    print(“Hi, I am “..self.name)<br>end<br>当我们调用Man:new时，self等于Man；因此我们可以直接使用Man取代self。关于继承下节会深入。有了这段代码之后，当我们创建一个Man的实例并且调用一个方法的时候，有什么发生呢？<br>a = Man:new{name = “Lee”}<br>print(a.name) –结果为Lee<br>我们来看到底发生了什么。当我们调用Man:new{name = “Lee”}时，其实相当于写 Man.new(Man, {name = “Lee”})。而现在，o = {name = “Lee”}， self = Man。也就是说o不为nil，这样，第三条语句就不起作用。之后我们绑定元表为Man, 并且让Man.<strong>index指向自己，这样，当a找不到的东西就会往Man找。<br>比如说下面：<br>a:sayHi() –结果为”Hi, I am Lee”<br>也就是说，a并没有sayHi这个方法。但是由于绑定了元表，所以a找不到sayHi会首先找Man.</strong>index，之后会再找_index所指向的表，也就是Man,而Man存在sayHi方法，它会调用它。</p>
-<p>我们再看一个例子<br>a = Man:new()    –这次我们没有传任何的值<br>print(a.name)    –结果为”unknow”<br>也就是说其实它继承了默认值。<br>但是，我们接着看：<br>a = Man:new()<br>a.name = “Lee”</p>
-<p>b = Man:new()<br>print(b.name)     –结果为unknow,并不是”Lee”<br>也就是说所有new出来的对象，都拥有了自己的单独的属性，也就实现了我们面向对象中 类和对象的概念。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">lua继承</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--%E7%B1%BB/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    目录，不存在的…
+                    </div>
+                </span>
             </div>
         </div>
         
-        
     </div>
 </aside>
 
 
 
-
   
-    <article id="post-lua面向对象设计--继承" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--%E7%BB%A7%E6%89%BF/">4.【Lua面向对象设计——继承】</a>
-    </h1>
   
 
-        
-        <a href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--%E7%BB%A7%E6%89%BF/" class="archive-article-date">
-  	<time datetime="2019-11-26T06:56:38.383Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-26</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>继续我们上一节，仍然假设我们有一个Man类：<br>Man = {name = “”}<br>function Man:new(o)<br>    o = o or {}            –如果不存在则实例化一个空表<br>    setmetatable(o, self)<br>    self.__index = self<br>    return o<br>end</p>
-<p>function Man:sayHi()<br>    print(“Hi,I’m “..self.name)<br>end<br>我们实例化它：<br>Lee = Man:new{name = “Lee”}<br>Lee:sayHi()   -结果是 Hi,I’m Lee<br>现在我们让一个SuperMan继承Man，并且再用SuperMan实例化多一个Lee,并且添加一个方法测试：<br>SuperMan = Man:new()<br>–添加多一个fly方法<br>function SuperMan:fly()<br>    print(“I’m “..self.name..”. I’m flying!”)<br>end<br>–用SuperMan实例化 Lee<br>Lee = SuperMan:new{name = “Lee”}<br>Lee:sayHi()    –结果：Hi, I’m Lee<br>Lee:fly        –结果：I’m Lee. I’m flying!<br>结果显示，superman继承了Man的方法。并可以添加自己的方法。<br>下面我们让SuperMan重写Man的sayHi方法：<br>function SuperMan:sayHi()<br>    print(“I am SuperMan, “..self.name)<br>end</p>
-<p>Lee = SuperMan:new{name = “Lee”}<br>Lee:sayHi()            –结果是：I am SuperMan, Lee</p>
-<p>这说明Lua也能像c++/java那样，子类重写父类的方法</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">lua继承</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--%E7%BB%A7%E6%89%BF/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-lua面向对象设计--BaseClass" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--BaseClass/">5.【Lua面向对象设计——BaseClass】</a>
-    </h1>
   
 
-        
-        <a href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--BaseClass/" class="archive-article-date">
-  	<time datetime="2019-11-26T06:56:38.377Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-26</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>下面我们来看一下BaseClass<br>–保存类类型的虚表<br>–_class的结构如下：_class = { Class_A = vtbl_A, Class_B = vtbl_B}<br>local _class = {}</p>
-<p> –BaseClass(super)<br> –函数功能：创建一个super类的子类类型<br> –子类类型实现了New方法、设置了当前类的元表（包括<strong>index函数和</strong>newindex函数，用于索引操作，该操作实现了对虚表的索引）<br> –如果是继承自父类，那么虚表的元表的索引方法将会在父类super对应的vtbl中去查找键值</p>
-<p>function BaseClass(super)<br>    – 生成一个类类型,    实际上存放类信息<br>    local class_type = {}</p>
-<pre><code>-- 在创建对象的时候自动调用
--- 默认的两个属性
---class_type.__init = false
-class_type.__delete = false
-class_type.super = super
-
---!!!看此方法时，先跳过，看完BaseClass的其他定义后，再来看此&quot;成员函数
--- 创建接口
--- 子类型class_type创建实例对象的方法
-class_type.New = function(...)
-    -- 生成一个类对象
-    local obj = {}
-    obj._class_type = class_type
-
-    -- 在初始化之前注册基类方法
-    -- 即引入基类class_type的虚表vtbl
-    setmetatable(obj, { __index = _class[class_type] })
-
-    -- 注册一个delete方法
-    if(super and not super.DeleteMe) then
-        obj.DeleteMe = function(obj_self)
-            local now_super = obj_self._class_type 
-            while now_super ~= nil do    
-                if now_super.__delete then
-                    now_super.__delete(obj_self)
-                end
-                now_super = now_super.super
-            end
-        end
-    end
-
-    -- 调用初始化方法
-    class_type.__init(obj, ...)
-
-    return obj
-end
-
---class_type类型的虚表
-local vtbl = {}
---在类类型的虚表中，为当前的类类型添加虚表，比如使用Layer = Layer or BaseClass() 创建了一个子类Layer，那么，此时类类型虚表中，会添加这么一项：_class = { Class_A = vtbl_A, Class_B = vtbl_B, Layer = {}}
-_class[class_type] = vtbl
-
--- 设置class_type的元表，给出访问索引函数和赋值索引函数
--- 从赋值索引函数__newindex上可以看出，如果要往class_type类型的中添加属性，会在其虚表vtbl中实现这种键值的添加
--- 比如Layer = BaseClass()后，通过Layer.position = {x = 0.0, y = 0.0} 往Layer中添加一个键值，此时该键值会添加在Layer类型所对应的虚表中，此时虚表变为：_class = { Class_A = vtbl_A, Class_B = vtbl_B, Layer = { position = {x = 0.0, y = 0.0} }}
--- 于是这么做的好处就现象出来了，类型Layer自身的键值不会发生改变，因此可以做为一个“稳定”的基类去派生子类，而所有的变化，都体现在Layer所对应的虚表vtbl_Layer中，这样的设计，封装了变化，也便于继承的实现
-setmetatable(class_type, {__newindex =
-    function(t,k,v)
-        vtbl[k] = v
-    end
-    , 
-    __index = vtbl, --For call parent method
-})
-
---如果是通过super派生子类，那么vtbl的访问索引将在super的vtbl中查找
-if super then
-    setmetatable(vtbl, {__index =
-        function(t,k)
-            local ret = _class[super][k]
-            --do not do accept, make hot update work right!
-            --vtbl[k] = ret
-            return ret
-        end
-    })
-end
-
-return class_type</code></pre><p>end<br>可能很多人看了之后还会有非常看不明白的地方。但是作为新手，只要明白以下几即可(红色字体着重理解)：<br>BaseClass提供了一个从已有类派生子类的方法。<br>为每个类型提供一个虚表（_class中存储这些虚表）<br>创建一个新的table（这里表现为class_type）作为新的类类型。<br>申明并定义class_type的属性class_type.<strong>delete class_type.super；<br>声明并定义class_type的方法class_type.New<br>配置class_type类型对应的虚表：vtbl<br>设置class_type的元表的访问索引和赋值索引<br>处理class_type类型从父类继承的属性和方法（通过设置class_type的虚表vtbl的元表访问索引来实现）<br>特别值得注意的是class_type的New方法——该方法表示从class_type类型创建一个实例obj，并调用class_type的</strong>init方法来初始化obj对象；（也就是说当使用Layer = Layer or BaseClass()创建一个新类型的时候，需要实现Layer:<strong>init(…)方法；<br>创建一个table(实际中是local obj = {})<br>设置obj对象元表，其访问索引方法</strong>index 从class_type的虚表vtbl中查找；<br>注册了一个delete方法，通过自底向上的方式析构对象；<br>使用__init方法来初始化；</p>
-<p>我们平常用的最多的ctrl就是直接由BaseClass创建的基类，下面一个小例子<br>TestCtrl = TestCtrl or BaseClass()  –如果不存在则创建一个TestCtrl类并实例化<br>而我们同样使用比较多的view是由BaseView派生的<br>TestView = TestView or BaseClass(BaseView) –创建一个BaseView的子类<br>有时候我们可以创建一个由BaseWindowsView派生的子类<br>TestView = TestView or BaseClass(BaseWindowView) –创建一个BaseWindowView的子类</p>
-<p>而BaseWindowView是继承自BaseViewMainFrame<br>BaseWindowView = BaseWindowView or BaseClass(BaseViewMainFrame)<br>BaseViewMainFrame又是继承自BaseView类。所以BaseClass只是一个实现继承的接口（并不是所有类的基类）</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">lua继承</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--BaseClass/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-我的第一篇博客文章" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/25/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E5%8D%9A%E5%AE%A2%E6%96%87%E7%AB%A0/">我的第一篇博客文章</a>
-    </h1>
   
 
-        
-        <a href="/2019/11/25/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E5%8D%9A%E5%AE%A2%E6%96%87%E7%AB%A0/" class="archive-article-date">
-  	<time datetime="2019-11-25T08:17:01.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-25</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="这是个故事"><a href="#这是个故事" class="headerlink" title="这是个故事"></a>这是个故事</h2><h2 id="水水水水水"><a href="#水水水水水" class="headerlink" title="水水水水水"></a>水水水水水</h2><h2 id="哈哈"><a href="#哈哈" class="headerlink" title="哈哈"></a>哈哈</h2><p>水水水</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/11/25/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E5%8D%9A%E5%AE%A2%E6%96%87%E7%AB%A0/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-hello-world" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/25/hello-world/">Hello World</a>
-    </h1>
-  
-
-        
-        <a href="/2019/11/25/hello-world/" class="archive-article-date">
-  	<time datetime="2019-11-25T07:52:17.089Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-25</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/11/25/hello-world/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
 
 
@@ -755,8 +352,8 @@ return class_type</code></pre><p>end<br>可能很多人看了之后还会有非�
     <script>
 	var yiliaConfig = {
 		mathjax: false,
-		isHome: true,
-		isPost: false,
+		isHome: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,
