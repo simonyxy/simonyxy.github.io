@@ -6,15 +6,17 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives: 2019/11 | Simon&#39;s Blog</title>
+  <title>对于特殊弹药的对象池生成 | Simon&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="记录我的游戏生涯">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Simon&#39;s Blog">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;archives&#x2F;2019&#x2F;11&#x2F;index.html">
+  <meta name="description" content="前面的开发因为没有记录，就略了。后续有时间也许会补充，今天写我自己生成一个炸弹对象池的方法">
+<meta name="keywords" content="我的射击游戏">
+<meta property="og:type" content="article">
+<meta property="og:title" content="对于特殊弹药的对象池生成">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;26&#x2F;%E5%AF%B9%E8%B1%A1%E6%B1%A0%E7%9A%84%E7%94%9F%E6%88%90&#x2F;index.html">
 <meta property="og:site_name" content="Simon&#39;s Blog">
-<meta property="og:description" content="记录我的游戏生涯">
+<meta property="og:description" content="前面的开发因为没有记录，就略了。后续有时间也许会补充，今天写我自己生成一个炸弹对象池的方法">
 <meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2019-11-26T08:46:10.167Z">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="/atom.xml" title="Simon&#39;s Blog" type="application/atom+xml">
@@ -147,36 +149,133 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-对象池的生成" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/11/26/%E5%AF%B9%E8%B1%A1%E6%B1%A0%E7%9A%84%E7%94%9F%E6%88%90/" class="archive-article-date">
-  	<time datetime="2019-11-26T07:57:52.276Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-26</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/11/26/%E5%AF%B9%E8%B1%A1%E6%B1%A0%E7%9A%84%E7%94%9F%E6%88%90/">对于特殊弹药的对象池生成</a>
+    <h1 class="article-title" itemprop="name">
+      对于特殊弹药的对象池生成
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2019/11/26/%E5%AF%B9%E8%B1%A1%E6%B1%A0%E7%9A%84%E7%94%9F%E6%88%90/" class="archive-article-date">
+  	<time datetime="2019-11-26T07:57:52.276Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-26</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>前面的开发因为没有记录，就略了。后续有时间也许会补充，今天写我自己生成一个炸弹对象池的方法</p>
+<a id="more"></a>
+
+<p>前言：对于一个射击游戏，子弹类的生成是会占用一部分内存的，通过享元模式的一种：对象池 去优化他<br>      对象池：1.初始化的时候生成<br>              2.不用的时候把子弹放回bulletpool<br>              3.对象池对象不足的时候生成</p>
+<p>– 思路：<br>– 1 .在unity上创建一个bulletpool空物体作为对象池，写一个对象池的脚本 BulletsPool 挂上去用于创建对象池，在里面通过创建List保存子弹对象。<br>–    在里面写一个获取方法（如果后续子弹类型很多可以把他抽象化成接口或者添加一个参数类型），该方法用来被玩家调用获取（SetActive（true））或者生成子弹（生成ADD到List中）</p>
+<p>– 2. 在玩家的脚本上面Update中写一个射击方法，这个方法可以调用获得一个对象并且把它的位置初始化到玩家的位置上</p>
+<p>– 3. 对子弹prefab上面添加一个bullet的脚本，这个脚本用来给子弹一个初始化的发射力（写在OnEnable上循环调用），并且当子弹碰撞到物体了之后或者一定时间消失后，放回到对象池中的方法 （放回到对象池其实就是SetActive       （false）即可）</p>
+<p>– 1.BulletsPool脚本<br>using System.Collections;<br>using System.Collections.Generic;<br>using UnityEngine;</p>
+<p>public class BulletsPool : MonoBehaviour<br>{<br>    public static BulletsPool bulletsPoolInstance;      //子弹池实例，被其他脚本调用方便<br>    public GameObject boomObj;                        //子弹perfabs<br>    public int pooledAmount = 5;                        //子弹池初始大小<br>    public bool lockPoolSize = false;                   //是否锁定子弹池大小<br>    private List<GameObject> pooledObjects;             //子弹池链表<br>    private int currentIndex = 0;                       //当前指向链表位置索引</p>
+<pre><code>private void Awake()
+{
+    bulletsPoolInstance = this;                     //把本对象作为实例
+}
+void Start()
+{
+    pooledObjects = new List&lt;GameObject&gt;();         //初始化链表
+    for (int i = 0; i &lt; pooledAmount; ++i)
+    {
+        GameObject obj = Instantiate(boomObj);    //创建子弹对象
+        obj.SetActive(false);                       //设置子弹无效
+        pooledObjects.Add(obj);                     //把子弹添加到链表（对象池）中
+    }
+}
+
+public GameObject GetPooledObject()                 //获取对象池中可以使用的子弹。
+{
+    for (int i = 0; i &lt; pooledObjects.Count; ++i)   //把对象池遍历一遍
+    {
+        //这里简单优化了一下，每一次遍历都是从上一次被使用的子弹的下一个，而不是每次遍历从0开始。
+        //例如上一次获取了第4个子弹，currentIndex就为5，这里从索引5开始遍历，这是一种贪心算法。
+        int temI = (currentIndex + i) % pooledObjects.Count;
+        if (!pooledObjects[temI].activeInHierarchy) //判断该子弹是否在场景中激活。
+         { 
+            currentIndex = (temI + 1) % pooledObjects.Count;
+            return pooledObjects[temI];             //找到没有被激活的子弹并返回
+         }
+    }
+    //如果遍历完一遍子弹库发现没有可以用的，执行下面
+    if (!lockPoolSize)                               //如果没有锁定对象池大小，创建子弹并添加到对象池中。
+    { 
+        GameObject obj = Instantiate(boomObj);
+        obj.transform.parent = this.transform;       //生成到buttlepool下
+        pooledObjects.Add(obj);
+        return obj;
+    }
+    //如果遍历完没有而且锁定了对象池大小，返回空。
+    return null;
+    }</code></pre><p>}</p>
+<p>– 2.Player的Update中添加 （其他略)<br>    if (BoomAttackColdState ==false &amp;&amp; Input.GetKey(KeyCode.F)  )               //可以发射子弹时间<br>    {<br>        BoomAttackColdState = true;                                             //是否处于发射冷却状态（这个我写了个计时器略）<br>        //获取对象池中的子弹<br>        GameObject bullet = BulletsPool.bulletsPoolInstance.GetPooledObject();  //调用对象池中的方法<br>        selfAnimator.SetInteger(“WeaponType_int”, 4);                           //动画略<br>        if (bullet != null)                  //不为空时执行<br>        {<br>            bullet.SetActive(true);         //激活子弹并初始化子弹的位置<br>            bullet.transform.position = shotTransform.position;<br>        }<br>    }<br>    else<br>    {<br>        selfAnimator.SetInteger(“WeaponType_int”, 0);                            //动画略<br>    }</p>
+<p>–3.Bullet脚本<br>using System.Collections;<br>using System.Collections.Generic;<br>using UnityEngine;</p>
+<p>public class bullet01 : MonoBehaviour<br>{<br>    private Rigidbody self_rig;       //用于添加发射力的自身刚体（略）<br>    public ParticleSystem boom;       //子弹的暴炸粒子效果（略）<br>    float force = 100;                </p>
+<pre><code>void GetD()
+{
+    gameObject.SetActive(false); 
+}
+void Awake()
+{
+    //这里可能会消耗一些性能，因为没生成一个子弹都要去获取player 的刚体，后面优化再注意改动
+    self_rig = this.GetComponent&lt;Rigidbody&gt;();
+}
+
+private void OnEnable()
+{
+    boom.Play();                    //这个粒子特效是被我设为3s后暴炸，所以设定了一个播放例子效果
+    Invoke(&quot;GetD&quot;, 3.5f);           //因为是个炸弹，他碰到物体也不会直接暴炸，定时3.5s放回对象池方法
+    AddForce(force);                //添加一个力
+}
+Void AddForce(float force) {  ... 略 }</code></pre><p>}</p>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/assets/img/zhifubao.jpg">
+                      <span class="reward-type">支付宝</span>
+                    </div>
+                    
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/assets/img/weixin.jpg">
+                      <span class="reward-type">微信</span>
+                    </div>
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -188,209 +287,119 @@
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/11/26/%E5%AF%B9%E8%B1%A1%E6%B1%A0%E7%9A%84%E7%94%9F%E6%88%90/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--%E5%85%83%E8%A1%A8/" class="archive-article-date">
-  	<time datetime="2019-11-26T06:56:38.396Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-26</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--%E5%85%83%E8%A1%A8/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">1.【Lua基础——元表】</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--%E5%85%83%E8%A1%A8/">1.【Lua基础——元表】</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">lua继承</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
+        
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    目录，不存在的…
+                    </div>
+                </span>
+            </div>
         </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
+        
+    </div>
+</aside>
+
+
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E5%9F%BA%E7%A1%80/" class="archive-article-date">
-  	<time datetime="2019-11-26T06:56:38.392Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-26</time>
-</a>
-        </div>
-    	 
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E5%9F%BA%E7%A1%80/">2.【Lua面向对象设计——面向对象基础】</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">lua继承</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--%E7%B1%BB/" class="archive-article-date">
-  	<time datetime="2019-11-26T06:56:38.388Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-26</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--%E7%B1%BB/">3.【Lua面向对象设计—-类】</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">lua继承</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--%E7%BB%A7%E6%89%BF/" class="archive-article-date">
-  	<time datetime="2019-11-26T06:56:38.383Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-26</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--%E7%BB%A7%E6%89%BF/">4.【Lua面向对象设计——继承】</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">lua继承</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--BaseClass/" class="archive-article-date">
-  	<time datetime="2019-11-26T06:56:38.377Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-26</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--BaseClass/">5.【Lua面向对象设计——BaseClass】</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">lua继承</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-    
 
 
           </div>
@@ -413,8 +422,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
