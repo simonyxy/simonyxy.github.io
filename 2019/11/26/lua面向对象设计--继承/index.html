@@ -8,15 +8,15 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>4.【Lua面向对象设计——继承】 | Simon&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="继续我们上一节，仍然假设我们有一个Man类：Man = {name = “”}function Man:new(o)    o = o or {}            –如果不存在则实例化一个空表    setmetatable(o, self)    self.__index = self    return oend function Man:sayHi()    print(“Hi,I’">
+  <meta name="description" content="继续我们上一节，仍然假设我们有一个Man类：">
 <meta name="keywords" content="lua继承">
 <meta property="og:type" content="article">
 <meta property="og:title" content="4.【Lua面向对象设计——继承】">
 <meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;26&#x2F;lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--%E7%BB%A7%E6%89%BF&#x2F;index.html">
 <meta property="og:site_name" content="Simon&#39;s Blog">
-<meta property="og:description" content="继续我们上一节，仍然假设我们有一个Man类：Man = {name = “”}function Man:new(o)    o = o or {}            –如果不存在则实例化一个空表    setmetatable(o, self)    self.__index = self    return oend function Man:sayHi()    print(“Hi,I’">
+<meta property="og:description" content="继续我们上一节，仍然假设我们有一个Man类：">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2019-11-26T07:16:20.795Z">
+<meta property="og:updated_time" content="2019-11-26T07:22:26.934Z">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="/atom.xml" title="Simon&#39;s Blog" type="application/atom+xml">
@@ -169,8 +169,9 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <a id="more"></a>
-<p>继续我们上一节，仍然假设我们有一个Man类：<br>Man = {name = “”}<br>function Man:new(o)<br>    o = o or {}            –如果不存在则实例化一个空表<br>    setmetatable(o, self)<br>    self.__index = self<br>    return o<br>end</p>
+        <p>继续我们上一节，仍然假设我们有一个Man类：</p>
+<a id="more"></a>
+<p>Man = {name = “”}<br>function Man:new(o)<br>    o = o or {}            –如果不存在则实例化一个空表<br>    setmetatable(o, self)<br>    self.__index = self<br>    return o<br>end</p>
 <p>function Man:sayHi()<br>    print(“Hi,I’m “..self.name)<br>end<br>我们实例化它：<br>Lee = Man:new{name = “Lee”}<br>Lee:sayHi()   -结果是 Hi,I’m Lee<br>现在我们让一个SuperMan继承Man，并且再用SuperMan实例化多一个Lee,并且添加一个方法测试：<br>SuperMan = Man:new()<br>–添加多一个fly方法<br>function SuperMan:fly()<br>    print(“I’m “..self.name..”. I’m flying!”)<br>end<br>–用SuperMan实例化 Lee<br>Lee = SuperMan:new{name = “Lee”}<br>Lee:sayHi()    –结果：Hi, I’m Lee<br>Lee:fly        –结果：I’m Lee. I’m flying!<br>结果显示，superman继承了Man的方法。并可以添加自己的方法。<br>下面我们让SuperMan重写Man的sayHi方法：<br>function SuperMan:sayHi()<br>    print(“I am SuperMan, “..self.name)<br>end</p>
 <p>Lee = SuperMan:new{name = “Lee”}<br>Lee:sayHi()            –结果是：I am SuperMan, Lee</p>
 <p>这说明Lua也能像c++/java那样，子类重写父类的方法</p>
