@@ -16,8 +16,10 @@
 <meta property="og:site_name" content="Simon&#39;s Blog">
 <meta property="og:description" content="前面的开发因为没有记录，就略了。后续有时间也许会补充，今天写我自己生成一个炸弹对象池的方法">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2019-11-26T08:46:10.167Z">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;assets&#x2F;img&#x2F;bulletpool.jpg">
+<meta property="og:updated_time" content="2019-11-26T09:32:36.033Z">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;assets&#x2F;img&#x2F;bulletpool.jpg">
   
     <link rel="alternative" href="/atom.xml" title="Simon&#39;s Blog" type="application/atom+xml">
   
@@ -162,7 +164,7 @@
 
         
         <a href="/2019/11/26/%E5%AF%B9%E8%B1%A1%E6%B1%A0%E7%9A%84%E7%94%9F%E6%88%90/" class="archive-article-date">
-  	<time datetime="2019-11-26T07:57:52.276Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-26</time>
+  	<time datetime="2019-11-26T08:50:29.203Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-26</time>
 </a>
         
       </header>
@@ -176,7 +178,7 @@
 <p>– 思路：<br>– 1 .在unity上创建一个bulletpool空物体作为对象池，写一个对象池的脚本 BulletsPool 挂上去用于创建对象池，在里面通过创建List保存子弹对象。<br>–    在里面写一个获取方法（如果后续子弹类型很多可以把他抽象化成接口或者添加一个参数类型），该方法用来被玩家调用获取（SetActive（true））或者生成子弹（生成ADD到List中）</p>
 <p>– 2. 在玩家的脚本上面Update中写一个射击方法，这个方法可以调用获得一个对象并且把它的位置初始化到玩家的位置上</p>
 <p>– 3. 对子弹prefab上面添加一个bullet的脚本，这个脚本用来给子弹一个初始化的发射力（写在OnEnable上循环调用），并且当子弹碰撞到物体了之后或者一定时间消失后，放回到对象池中的方法 （放回到对象池其实就是SetActive       （false）即可）</p>
-<p>– 1.BulletsPool脚本<br>using System.Collections;<br>using System.Collections.Generic;<br>using UnityEngine;</p>
+<p>– 1.BulletsPool脚本<br>、、、C#<br>using System.Collections;<br>using System.Collections.Generic;<br>using UnityEngine;</p>
 <p>public class BulletsPool : MonoBehaviour<br>{<br>    public static BulletsPool bulletsPoolInstance;      //子弹池实例，被其他脚本调用方便<br>    public GameObject boomObj;                        //子弹perfabs<br>    public int pooledAmount = 5;                        //子弹池初始大小<br>    public bool lockPoolSize = false;                   //是否锁定子弹池大小<br>    private List<GameObject> pooledObjects;             //子弹池链表<br>    private int currentIndex = 0;                       //当前指向链表位置索引</p>
 <pre><code>private void Awake()
 {
@@ -216,9 +218,9 @@ public GameObject GetPooledObject()                 //获取对象池中可以�
     }
     //如果遍历完没有而且锁定了对象池大小，返回空。
     return null;
-    }</code></pre><p>}</p>
-<p>– 2.Player的Update中添加 （其他略)<br>    if (BoomAttackColdState ==false &amp;&amp; Input.GetKey(KeyCode.F)  )               //可以发射子弹时间<br>    {<br>        BoomAttackColdState = true;                                             //是否处于发射冷却状态（这个我写了个计时器略）<br>        //获取对象池中的子弹<br>        GameObject bullet = BulletsPool.bulletsPoolInstance.GetPooledObject();  //调用对象池中的方法<br>        selfAnimator.SetInteger(“WeaponType_int”, 4);                           //动画略<br>        if (bullet != null)                  //不为空时执行<br>        {<br>            bullet.SetActive(true);         //激活子弹并初始化子弹的位置<br>            bullet.transform.position = shotTransform.position;<br>        }<br>    }<br>    else<br>    {<br>        selfAnimator.SetInteger(“WeaponType_int”, 0);                            //动画略<br>    }</p>
-<p>–3.Bullet脚本<br>using System.Collections;<br>using System.Collections.Generic;<br>using UnityEngine;</p>
+    }</code></pre><p>}<br>、、、</p>
+<p>– 2.Player的Update中添加 （其他略)<br>、、、<br>    if (BoomAttackColdState ==false &amp;&amp; Input.GetKey(KeyCode.F)  )               //可以发射子弹时间<br>    {<br>        BoomAttackColdState = true;                                             //是否处于发射冷却状态（这个我写了个计时器略）<br>        //获取对象池中的子弹<br>        GameObject bullet = BulletsPool.bulletsPoolInstance.GetPooledObject();  //调用对象池中的方法<br>        selfAnimator.SetInteger(“WeaponType_int”, 4);                           //动画略<br>        if (bullet != null)                  //不为空时执行<br>        {<br>            bullet.SetActive(true);         //激活子弹并初始化子弹的位置<br>            bullet.transform.position = shotTransform.position;<br>        }<br>    }<br>    else<br>    {<br>        selfAnimator.SetInteger(“WeaponType_int”, 0);                            //动画略<br>    }<br>、、、</p>
+<p>–3.Bullet脚本<br>、、、<br>using System.Collections;<br>using System.Collections.Generic;<br>using UnityEngine;</p>
 <p>public class bullet01 : MonoBehaviour<br>{<br>    private Rigidbody self_rig;       //用于添加发射力的自身刚体（略）<br>    public ParticleSystem boom;       //子弹的暴炸粒子效果（略）<br>    float force = 100;                </p>
 <pre><code>void GetD()
 {
@@ -236,7 +238,8 @@ private void OnEnable()
     Invoke(&quot;GetD&quot;, 3.5f);           //因为是个炸弹，他碰到物体也不会直接暴炸，定时3.5s放回对象池方法
     AddForce(force);                //添加一个力
 }
-Void AddForce(float force) {  ... 略 }</code></pre><p>}</p>
+Void AddForce(float force) {  ... 略 }</code></pre><p>}<br>、、、<br>最终效果：<br><img src="/assets/img/bulletpool.jpg" alt="avatar"></p>
+<p>作者：Simon YXY</p>
 
       
 
