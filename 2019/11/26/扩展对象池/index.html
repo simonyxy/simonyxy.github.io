@@ -6,15 +6,17 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives: 2019/11 | Simon&#39;s Blog</title>
+  <title>扩展对象池 | Simon&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="记录我的游戏生涯">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Simon&#39;s Blog">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;archives&#x2F;2019&#x2F;11&#x2F;index.html">
+  <meta name="description" content="已经有了一个对象池的前提下，怎么样去完成切换武器的功能同时把这个东西加入到对象池中">
+<meta name="keywords" content="我的射击游戏">
+<meta property="og:type" content="article">
+<meta property="og:title" content="扩展对象池">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;26&#x2F;%E6%89%A9%E5%B1%95%E5%AF%B9%E8%B1%A1%E6%B1%A0&#x2F;index.html">
 <meta property="og:site_name" content="Simon&#39;s Blog">
-<meta property="og:description" content="记录我的游戏生涯">
+<meta property="og:description" content="已经有了一个对象池的前提下，怎么样去完成切换武器的功能同时把这个东西加入到对象池中">
 <meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2019-12-02T07:51:33.750Z">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="/atom.xml" title="Simon&#39;s Blog" type="application/atom+xml">
@@ -147,36 +149,89 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
+            <article id="post-扩展对象池" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
   
+    <h1 class="article-title" itemprop="name">
+      扩展对象池
+    </h1>
   
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/11/26/%E6%89%A9%E5%B1%95%E5%AF%B9%E8%B1%A1%E6%B1%A0/" class="archive-article-date">
+
+        
+        <a href="/2019/11/26/%E6%89%A9%E5%B1%95%E5%AF%B9%E8%B1%A1%E6%B1%A0/" class="archive-article-date">
   	<time datetime="2019-11-26T10:02:22.553Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-26</time>
 </a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/11/26/%E6%89%A9%E5%B1%95%E5%AF%B9%E8%B1%A1%E6%B1%A0/">扩展对象池</a>
-    </h1>
-  
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>已经有了一个对象池的前提下，怎么样去完成切换武器的功能同时把这个东西加入到对象池中</p>
+<a id="more"></a>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>当你已经完成了一个对象池的生成，怎么去把这个对象池扩展出去成为一个更大的对象池。因为当前人物和对象池和子弹的脚本是解耦的，相互之间的联系不是这么大，所以我们分别从三个方面把他们简单扩展写一下即可。<br>该游戏的武器类型有：普通、散弹（前两个准备用射线做）、手榴弹、陷阱、火箭筒（后三个用prefab做，放在对象池）</p>
+<h1 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h1><p>1.在对象池脚本里面</p>
+<ul>
+<li>声明一个武器类，把各种武器都抽象成武器类，并且生成他们的一个对象</li>
+<li>枚举一个武器类型，玩家更改武器时用来调用</li>
+<li>初始化当前武器类型和武器类</li>
+<li>把初始化和获取子弹的方法添加一个参数，扩展</li>
+<li>更改武器的方法<br>2.在玩家脚本里</li>
+<li>获取对象池里当前武器类型</li>
+<li>发射时判断当前武器类型是否需要调用对象池</li>
+<li>切换武器的方法<br>3.在各种武器prefab里</li>
+<li>相互独立的处理（后面会补充）</li>
+</ul>
+<h1 id="1-在对象池脚本里面"><a href="#1-在对象池脚本里面" class="headerlink" title="1.在对象池脚本里面"></a>1.在对象池脚本里面</h1><figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"></span><br><span class="line"><span class="comment">//枚举一个武器结构，玩家更改武器时用来调用</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> GunEnum</span><br><span class="line">&#123;</span><br><span class="line">    normal,    <span class="comment">//普通</span></span><br><span class="line">    shutgun,   <span class="comment">//散弹枪</span></span><br><span class="line">    boom,      <span class="comment">//手榴弹</span></span><br><span class="line">    <span class="keyword">set</span>,       <span class="comment">//陷阱</span></span><br><span class="line">    roket,     <span class="comment">//火箭筒  </span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//声明一个武器类，把各种武器都声明成武器类的一个对象</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">SortOfFire</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">//各自的子弹prefab和保存他们对象的列表</span></span><br><span class="line">    <span class="keyword">public</span> GameObject bullet;</span><br><span class="line">    <span class="keyword">public</span> List&lt;GameObject&gt; bulletObj;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">int</span> currentIndex;                        <span class="comment">//当前指向链表位置索引</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//构造方法</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">SortOfFire</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">        bulletObj = <span class="keyword">new</span> List&lt;GameObject&gt;();        </span><br><span class="line">        currentIndex = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">BulletsPool</span> : <span class="title">MonoBehaviour</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span>  <span class="keyword">bool</span> lockPoolSize = <span class="literal">true</span>;                    <span class="comment">//是否锁定子弹池大小</span></span><br><span class="line">    <span class="keyword">public</span>  <span class="keyword">static</span> BulletsPool bulletsPoolInstance;      <span class="comment">//子弹池单例</span></span><br><span class="line">    <span class="keyword">public</span>  <span class="keyword">int</span> pooledAmount = <span class="number">5</span>;                        <span class="comment">//子弹池初始大小</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//生成类对象</span></span><br><span class="line">    <span class="keyword">public</span> SortOfFire boomObj  = <span class="keyword">new</span> SortOfFire();                            <span class="comment">//手榴弹</span></span><br><span class="line">    <span class="keyword">public</span> SortOfFire setObj   = <span class="keyword">new</span> SortOfFire();                             <span class="comment">//陷阱</span></span><br><span class="line">    <span class="keyword">public</span> SortOfFire roketObj = <span class="keyword">new</span> SortOfFire();                           <span class="comment">//火箭筒 </span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//声明子弹类型，在外部把他们初始化</span></span><br><span class="line">    <span class="keyword">public</span> GameObject boom;</span><br><span class="line">    <span class="keyword">public</span> GameObject sett;</span><br><span class="line">    <span class="keyword">public</span> GameObject roket;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//初始化当前武器类型和武器类</span></span><br><span class="line">    SortOfFire nowbulletType;                                  </span><br><span class="line">    <span class="keyword">public</span> GunEnum nowType;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Awake</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>    &#123;  </span><br><span class="line">        <span class="comment">//初始化武器类型</span></span><br><span class="line">        nowType = GunEnum.normal;</span><br><span class="line">        boomObj.bullet  = boom;</span><br><span class="line">        setObj.bullet   = sett;</span><br><span class="line">        roketObj.bullet = roket;</span><br><span class="line">        bulletsPoolInstance = <span class="keyword">this</span>;                     <span class="comment">//把本对象作为实例</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Start</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        <span class="comment">//初始化子弹</span></span><br><span class="line">        InitBullet(nowbulletType);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> GameObject <span class="title">GetPooledObject</span>(<span class="params">GunEnum Sort</span>)                 <span class="comment">//获取对象池中可以使用的子弹。</span></span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        <span class="keyword">if</span> (Sort == GunEnum.boom) nowbulletType = boomObj;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (Sort == GunEnum.roket) nowbulletType = roketObj;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (Sort == GunEnum.<span class="keyword">set</span>) nowbulletType = setObj;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nowbulletType.bulletObj.Count; ++i)   <span class="comment">//把对象池遍历一遍</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">//这里简单优化了一下，每一次遍历都是从上一次被使用的子弹的下一个，而不是每次遍历从0开始。</span></span><br><span class="line">            <span class="comment">//例如上一次获取了第4个子弹，currentIndex就为5，这里从索引5开始遍历，这是一种贪心算法。</span></span><br><span class="line">            <span class="keyword">int</span> temI = (nowbulletType.currentIndex + i) % nowbulletType.bulletObj.Count;</span><br><span class="line">            <span class="keyword">if</span> (!nowbulletType.bulletObj[temI].activeInHierarchy) <span class="comment">//判断该子弹是否在场景中激活。</span></span><br><span class="line">             &#123;</span><br><span class="line">                nowbulletType.currentIndex = (temI + <span class="number">1</span>) % nowbulletType.bulletObj.Count;</span><br><span class="line">                <span class="keyword">return</span> nowbulletType.bulletObj[temI];             <span class="comment">//找到没有被激活的子弹并返回</span></span><br><span class="line">             &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//如果遍历完一遍子弹库发现没有可以用的，执行下面</span></span><br><span class="line">        <span class="keyword">if</span> (!lockPoolSize)                               <span class="comment">//如果没有锁定对象池大小，创建子弹并添加到对象池中。</span></span><br><span class="line">        &#123; </span><br><span class="line">            GameObject obj = Instantiate(nowbulletType.bullet);</span><br><span class="line">            obj.transform.parent = <span class="keyword">this</span>.transform;       <span class="comment">//生成到buttlepool下</span></span><br><span class="line">            nowbulletType.bulletObj.Add(obj);</span><br><span class="line">            <span class="keyword">return</span> obj;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//如果遍历完没有而且锁定了对象池大小，返回空。</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">     </span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">InitBullet</span>(<span class="params">SortOfFire bulletSort</span>)</span></span><br><span class="line"><span class="function"></span>   &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; pooledAmount; ++i)</span><br><span class="line">      &#123;</span><br><span class="line">        GameObject obj = Instantiate(bulletSort.bullet);   <span class="comment">//创建子弹对象</span></span><br><span class="line">        obj.SetActive(<span class="literal">false</span>);                              <span class="comment">//设置子弹无效</span></span><br><span class="line">        bulletSort.bulletObj.Add(obj);                     <span class="comment">//把子弹添加到链表（对象池）中</span></span><br><span class="line">     &#125;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//切换武器的方法</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> GunEnum <span class="title">BulletChange</span>(<span class="params"><span class="keyword">int</span> i</span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        <span class="keyword">if</span>(i == <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> (nowType ==GunEnum.roket) <span class="keyword">return</span> nowType;</span><br><span class="line">            nowType++;</span><br><span class="line">            <span class="keyword">return</span> nowType;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> </span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> (nowType == GunEnum.normal) <span class="keyword">return</span> nowType;</span><br><span class="line">            nowType--;</span><br><span class="line">            <span class="keyword">return</span> nowType;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-        <div class="article-info info-on-right">
-          
+
+
+<h1 id="2-在玩家脚本里-仅修改update里面的方法"><a href="#2-在玩家脚本里-仅修改update里面的方法" class="headerlink" title="2.在玩家脚本里(仅修改update里面的方法)"></a>2.在玩家脚本里(仅修改update里面的方法)</h1><figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Player</span> : <span class="title">MonoBehaviour</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">//单例</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Player playerInstance;</span><br><span class="line">    <span class="comment">//自身刚体</span></span><br><span class="line">    <span class="keyword">private</span> Rigidbody selfRigidbody;</span><br><span class="line">    <span class="comment">//自身动画组件</span></span><br><span class="line">    <span class="keyword">private</span> Animator selfAnimator;</span><br><span class="line">    <span class="comment">//控制移动的水平和垂直分量</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">float</span> horizontalFactor;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">float</span> verticalFactor;</span><br><span class="line">    <span class="comment">//玩家移动方向</span></span><br><span class="line">    <span class="keyword">public</span> Vector3 moveDirection;</span><br><span class="line">    <span class="comment">//玩家移动速度</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">float</span> moveSpeed=<span class="number">8</span>;</span><br><span class="line">    <span class="comment">//计算玩家的旋转</span></span><br><span class="line">    <span class="keyword">private</span> Quaternion rotaDirection;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//传统创建子弹方法需要的子弹perfabs</span></span><br><span class="line">    <span class="keyword">public</span> Transform shotTransform;                <span class="comment">//子弹发射的初始化位置</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">float</span> BoomAttackInterval = <span class="number">1.3f</span>;        <span class="comment">//每次发射子弹事件间隔</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">float</span> BoomAttackTimer;                 <span class="comment">//下一次发射子弹的时间</span></span><br><span class="line">    <span class="keyword">bool</span> BoomAttackColdState=<span class="literal">false</span>;</span><br><span class="line">    <span class="comment">//获得对象池</span></span><br><span class="line">    <span class="keyword">public</span> GameObject bulletPool;</span><br><span class="line">    <span class="comment">//声明当前武器类型</span></span><br><span class="line">    GunEnum gunType;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Start</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        playerInstance = <span class="keyword">this</span>;</span><br><span class="line">        <span class="comment">//自身刚体组件</span></span><br><span class="line">        selfRigidbody = <span class="keyword">this</span>.GetComponent&lt;Rigidbody&gt;();</span><br><span class="line">        <span class="comment">//自身动画</span></span><br><span class="line">        selfAnimator = <span class="keyword">this</span>.GetComponent&lt;Animator&gt;();</span><br><span class="line">        gunType = BulletsPool.bulletsPoolInstance.nowType;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Update</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        <span class="meta">#<span class="meta-keyword">region</span> 炸弹攻击的计时器</span></span><br><span class="line">        <span class="comment">//判断语句，普通攻击 间隔计时器计时</span></span><br><span class="line">        <span class="keyword">if</span> (BoomAttackColdState == <span class="literal">true</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            BoomAttackTimer += Time.deltaTime;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (BoomAttackTimer &gt;= BoomAttackInterval)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="comment">//退出冷却</span></span><br><span class="line">                BoomAttackColdState = <span class="literal">false</span>;</span><br><span class="line">                <span class="comment">//计时器时间归零</span></span><br><span class="line">                BoomAttackTimer = <span class="number">0</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="meta">#<span class="meta-keyword">endregion</span></span></span><br><span class="line">        <span class="keyword">if</span> (gunType != GunEnum.normal &amp;&amp; gunType != GunEnum.shutgun)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> (BoomAttackColdState ==<span class="literal">false</span> &amp;&amp; Input.GetKey(KeyCode.F)  )               <span class="comment">//可以发射子弹时间</span></span><br><span class="line">            &#123;</span><br><span class="line">            </span><br><span class="line">                BoomAttackColdState = <span class="literal">true</span>;</span><br><span class="line">                <span class="comment">//获取对象池中的子弹</span></span><br><span class="line">                GameObject bullet = BulletsPool.bulletsPoolInstance.GetPooledObject(BulletsPool.bulletsPoolInstance.nowType);</span><br><span class="line">                selfAnimator.SetInteger(<span class="string">"WeaponType_int"</span>, <span class="number">4</span>);</span><br><span class="line">                selfAnimator.SetBool(<span class="string">"Walkable"</span>, horizontalFactor != <span class="number">0</span> || verticalFactor != <span class="number">0</span>);</span><br><span class="line">                <span class="keyword">if</span> (bullet != <span class="literal">null</span>)                  <span class="comment">//不为空时执行</span></span><br><span class="line">                &#123;</span><br><span class="line">                    bullet.SetActive(<span class="literal">true</span>);         <span class="comment">//激活子弹并初始化子弹的位置</span></span><br><span class="line">                    bullet.transform.position = shotTransform.position;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">            &#123;</span><br><span class="line">                selfAnimator.SetInteger(<span class="string">"WeaponType_int"</span>, <span class="number">0</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.Log(gunType);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (Input.GetKeyDown(KeyCode.E))</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">//调用对象池里的方法切换武器</span></span><br><span class="line">            gunType = BulletsPool.bulletsPoolInstance.BulletChange(<span class="number">0</span>);</span><br><span class="line">            Debug.Log(gunType);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (Input.GetKeyDown(KeyCode.Q))</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">//调用对象池里的方法切换武器</span></span><br><span class="line">            gunType = BulletsPool.bulletsPoolInstance.BulletChange(<span class="number">1</span>);</span><br><span class="line">            Debug.Log(gunType); </span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">FixedUpdate</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        <span class="comment">//获得unity轴</span></span><br><span class="line">        horizontalFactor = Input.GetAxis(<span class="string">"Horizontal"</span>);</span><br><span class="line">        verticalFactor = Input.GetAxis(<span class="string">"Vertical"</span>);</span><br><span class="line">        <span class="comment">//如果水平分量或者竖直方向不为0，调用移动函数</span></span><br><span class="line">        <span class="keyword">if</span> (horizontalFactor != <span class="number">0</span> || verticalFactor != <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">//移动</span></span><br><span class="line">            Move();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//把动画从Idle切换为Move</span></span><br><span class="line">        selfAnimator.SetBool(<span class="string">"Walkable"</span>, horizontalFactor != <span class="number">0</span> || verticalFactor != <span class="number">0</span>);</span><br><span class="line">        <span class="comment">//满足后面条件时候为TURE不满足为False</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">Move</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        <span class="comment">//玩家移动方向</span></span><br><span class="line">        moveDirection = <span class="keyword">new</span> Vector3(horizontalFactor, <span class="number">0</span>, verticalFactor);</span><br><span class="line">        <span class="comment">//归一化（模取1）</span></span><br><span class="line">        moveDirection.Normalize();</span><br><span class="line"></span><br><span class="line">        <span class="comment">//移动，（使用物理引擎，而不是改动位置，这样发生碰撞什么的更准确）</span></span><br><span class="line">        <span class="comment">//当前位置+ （速度大小*速度方向*速度更新时间）</span></span><br><span class="line">        selfRigidbody.MovePosition(<span class="keyword">this</span>.transform.position + (moveSpeed * moveDirection * Time.fixedDeltaTime));</span><br><span class="line"></span><br><span class="line">        rotaDirection = Quaternion.LookRotation(moveDirection);</span><br><span class="line">        selfRigidbody.MoveRotation(rotaDirection);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>最终结果 ： 略<br>作者：Simon YXY</li>
+</ul>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/assets/img/zhifubao.jpg">
+                      <span class="reward-type">支付宝</span>
+                    </div>
+                    
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/assets/img/weixin.jpg">
+                      <span class="reward-type">微信</span>
+                    </div>
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -188,247 +243,119 @@
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/11/26/%E6%89%A9%E5%B1%95%E5%AF%B9%E8%B1%A1%E6%B1%A0/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/11/26/%E5%AF%B9%E8%B1%A1%E6%B1%A0%E7%9A%84%E7%94%9F%E6%88%90/" class="archive-article-date">
-  	<time datetime="2019-11-26T09:35:15.560Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-26</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2019/11/26/%E5%AF%B9%E8%B1%A1%E6%B1%A0%E7%9A%84%E7%94%9F%E6%88%90/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">对于特殊弹药的对象池生成</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/11/26/%E5%AF%B9%E8%B1%A1%E6%B1%A0%E7%9A%84%E7%94%9F%E6%88%90/">对于特殊弹药的对象池生成</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">我的射击游戏</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
+        
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#思路"><span class="toc-number">2.</span> <span class="toc-text">思路</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1-在对象池脚本里面"><span class="toc-number">3.</span> <span class="toc-text">1.在对象池脚本里面</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-在玩家脚本里-仅修改update里面的方法"><span class="toc-number">4.</span> <span class="toc-text">2.在玩家脚本里(仅修改update里面的方法)</span></a></li></ol>
+                    </div>
+                </span>
+            </div>
         </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
+        
+    </div>
+</aside>
+
+
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--%E5%85%83%E8%A1%A8/" class="archive-article-date">
-  	<time datetime="2019-11-26T06:56:38.396Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-26</time>
-</a>
-        </div>
-    	 
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--%E5%85%83%E8%A1%A8/">1.【Lua基础——元表】</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">lua继承</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E5%9F%BA%E7%A1%80/" class="archive-article-date">
-  	<time datetime="2019-11-26T06:56:38.392Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-26</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E5%9F%BA%E7%A1%80/">2.【Lua面向对象设计——面向对象基础】</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">lua继承</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--%E7%B1%BB/" class="archive-article-date">
-  	<time datetime="2019-11-26T06:56:38.388Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-26</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--%E7%B1%BB/">3.【Lua面向对象设计—-类】</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">lua继承</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--%E7%BB%A7%E6%89%BF/" class="archive-article-date">
-  	<time datetime="2019-11-26T06:56:38.383Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-26</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--%E7%BB%A7%E6%89%BF/">4.【Lua面向对象设计——继承】</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">lua继承</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--BaseClass/" class="archive-article-date">
-  	<time datetime="2019-11-26T06:56:38.377Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-26</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--BaseClass/">5.【Lua面向对象设计——BaseClass】</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">lua继承</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-    
 
 
           </div>
@@ -451,8 +378,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
