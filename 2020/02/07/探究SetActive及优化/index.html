@@ -6,16 +6,28 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives | Simon&#39;s Blog</title>
+  <title>探究SetActive及优化 | Simon&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="记录我的游戏生涯">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Simon&#39;s Blog">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;archives&#x2F;index.html">
+  <meta name="description" content="关于SetActive优化目的SetActive 应该是在用unity开发的当中使用最多的一个方法之一 在ui中使用可能会更多 为了应对各种各样的需求 我们可能会在代码中使用大量的 SetActive(true) SetActive(false) 是否有更高效的代替方法？三种隐藏UI的方法：1.SetActive（）2.Transform移动3.canvasGroup  1.SetActive分析">
+<meta name="keywords" content="UI">
+<meta property="og:type" content="article">
+<meta property="og:title" content="探究SetActive及优化">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;02&#x2F;07&#x2F;%E6%8E%A2%E7%A9%B6SetActive%E5%8F%8A%E4%BC%98%E5%8C%96&#x2F;index.html">
 <meta property="og:site_name" content="Simon&#39;s Blog">
-<meta property="og:description" content="记录我的游戏生涯">
+<meta property="og:description" content="关于SetActive优化目的SetActive 应该是在用unity开发的当中使用最多的一个方法之一 在ui中使用可能会更多 为了应对各种各样的需求 我们可能会在代码中使用大量的 SetActive(true) SetActive(false) 是否有更高效的代替方法？三种隐藏UI的方法：1.SetActive（）2.Transform移动3.canvasGroup  1.SetActive分析">
 <meta property="og:locale" content="en">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;assets&#x2F;img&#x2F;UI_3.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;assets&#x2F;img&#x2F;UI_4.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;assets&#x2F;img&#x2F;UI_5.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;assets&#x2F;img&#x2F;UI_6.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;assets&#x2F;img&#x2F;UI_7.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;assets&#x2F;img&#x2F;UI_8.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;assets&#x2F;img&#x2F;UI_9.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;assets&#x2F;img&#x2F;UI_10.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;assets&#x2F;img&#x2F;UI_11.jpg">
+<meta property="og:updated_time" content="2020-02-06T17:39:19.463Z">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;assets&#x2F;img&#x2F;UI_3.jpg">
   
     <link rel="alternative" href="/atom.xml" title="Simon&#39;s Blog" type="application/atom+xml">
   
@@ -147,36 +159,75 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
+            <article id="post-探究SetActive及优化" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
   
+    <h1 class="article-title" itemprop="name">
+      探究SetActive及优化
+    </h1>
   
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2020" class="archive-year">2020</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2020/02/07/%E6%8E%A2%E7%A9%B6SetActive%E5%8F%8A%E4%BC%98%E5%8C%96/" class="archive-article-date">
+
+        
+        <a href="/2020/02/07/%E6%8E%A2%E7%A9%B6SetActive%E5%8F%8A%E4%BC%98%E5%8C%96/" class="archive-article-date">
   	<time datetime="2020-02-06T17:30:18.077Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-02-07</time>
 </a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/02/07/%E6%8E%A2%E7%A9%B6SetActive%E5%8F%8A%E4%BC%98%E5%8C%96/">探究SetActive及优化</a>
-    </h1>
-  
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="关于SetActive"><a href="#关于SetActive" class="headerlink" title="关于SetActive"></a>关于SetActive</h1><p>优化目的<br>SetActive 应该是在用unity开发的当中使用最多的一个方法之一 在ui中使用可能会更多 为了应对各种各样的需求 我们可能会在代码中使用大量的 SetActive(true) SetActive(false)</p>
+<h1 id="是否有更高效的代替方法？"><a href="#是否有更高效的代替方法？" class="headerlink" title="是否有更高效的代替方法？"></a>是否有更高效的代替方法？</h1><p>三种隐藏UI的方法：<br>1.SetActive（）<br>2.Transform移动<br>3.canvasGroup </p>
+<h1 id="1-SetActive分析"><a href="#1-SetActive分析" class="headerlink" title="1.SetActive分析"></a>1.SetActive分析</h1><p> <img src="/assets/img/UI_3.jpg" alt="avatar"><br>\用luaProflier 可以看到.SetActive消耗 产生（4KB）CG  lua函数调用时间0.14ms lua函数消耗0.000139s</p>
+<p>接下来用Transform移动<br><img src="/assets/img/UI_4.jpg" alt="avatar"><br>\用luaProflier 可以看到.Transform移动消耗 产生0 CG  lua函数调用时间0.07ms lua函数消耗0.000071s</p>
+<p>再接下来用canvasGroup<br><img src="/assets/img/UI_5.jpg" alt="avatar"><br>\用Proflier 可以看到canvasGroup消耗 产生0 CG  函数调用时间0.05ms </p>
+<p>根据上面图显示消耗时间canvasGroup&lt; Transform移动&lt; SetActive（）</p>
+<p>建议隐藏红点或button等小组件可以用SetActive（）<br>小界面panel可以用canvasGrou.alpha = 0隐藏<br>canvasGrou的Alpha由0设为1的时候，并不会让自己活着子节点中的脚本执行。</p>
+<p>为了正确了解SetActive为什么会产生GC用C#模拟一下一个界面要SetActive 20次情况<br><img src="/assets/img/UI_6.jpg" alt="avatar"><br><img src="/assets/img/UI_7.jpg" alt="avatar"><br><img src="/assets/img/UI_8.jpg" alt="avatar"></p>
+<p>还会蛮整齐GC的 这就是 为什么网上大佬们都不建议用setactive这个方法 在每次使用的时候会遍历这个实体上所有继承MonoBehaviour的脚本调用OnEnable 因为Image继承的MaskableGraphic 下图可以发现 写了方法算上基类的方法产生GC。<br><img src="/assets/img/UI_9.jpg" alt="avatar"></p>
+<p>重点来了我手贱又在这个image下挂了一个image 如下<br><img src="/assets/img/UI_10.jpg" alt="avatar"><br>最终结果：<br><img src="/assets/img/UI_11.jpg" alt="avatar"><br>父物体在使用SetActive时 也会调用子物体的GameObject.Activate和GameObject.Deactivate所以在做ui时 一个panel下挂载很多的image 调用这个panel的SetActive 其实基本等同于调用这个物体上每一个子物体的SetActive 并在每次使用的时候会遍历这个实体上所有继承MonoBehaviour的脚本带来大量的GC。</p>
+<h1 id="思考：能否写成一个线程？"><a href="#思考：能否写成一个线程？" class="headerlink" title="思考：能否写成一个线程？"></a>思考：能否写成一个线程？</h1>
+      
 
-        <div class="article-info info-on-right">
-          
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/assets/img/zhifubao.jpg">
+                      <span class="reward-type">支付宝</span>
+                    </div>
+                    
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/assets/img/weixin.jpg">
+                      <span class="reward-type">微信</span>
+                    </div>
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -188,333 +239,119 @@
 		</ul>
 	</div>
 
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2020/02/07/UGUI%E6%8F%92%E4%BB%B6%EF%BC%8C%E4%BB%A5%E5%8F%8AUGUI%E5%92%8CNGUI/" class="archive-article-date">
-  	<time datetime="2020-02-06T17:02:39.882Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-02-07</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/02/07/UGUI%E6%8F%92%E4%BB%B6%EF%BC%8C%E4%BB%A5%E5%8F%8AUGUI%E5%92%8CNGUI/">自写UGUI插件，以及对比NGUI</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">UI</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
       
-        </div></section>
+
       
+
       
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/11/26/%E6%89%A9%E5%B1%95%E5%AF%B9%E8%B1%A1%E6%B1%A0/" class="archive-article-date">
-  	<time datetime="2019-11-26T10:02:22.553Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-26</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/11/26/%E6%89%A9%E5%B1%95%E5%AF%B9%E8%B1%A1%E6%B1%A0/">扩展对象池</a>
-    </h1>
-  
+      </div>
+    </span>
+  </div>
+</div>
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">我的射击游戏</a>
-        		</li>
-      		
-		</ul>
-	</div>
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2020/02/07/%E6%8E%A2%E7%A9%B6SetActive%E5%8F%8A%E4%BC%98%E5%8C%96/" alt="微信分享二维码">
+    </div>
+</div>
 
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/11/26/%E5%AF%B9%E8%B1%A1%E6%B1%A0%E7%9A%84%E7%94%9F%E6%88%90/" class="archive-article-date">
-  	<time datetime="2019-11-26T09:35:15.560Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-26</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2020/02/07/UGUI%E6%8F%92%E4%BB%B6%EF%BC%8C%E4%BB%A5%E5%8F%8AUGUI%E5%92%8CNGUI/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">自写UGUI插件，以及对比NGUI</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/11/26/%E5%AF%B9%E8%B1%A1%E6%B1%A0%E7%9A%84%E7%94%9F%E6%88%90/">对于特殊弹药的对象池生成</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">我的射击游戏</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
+        
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#关于SetActive"><span class="toc-number">1.</span> <span class="toc-text">关于SetActive</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#是否有更高效的代替方法？"><span class="toc-number">2.</span> <span class="toc-text">是否有更高效的代替方法？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1-SetActive分析"><span class="toc-number">3.</span> <span class="toc-text">1.SetActive分析</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#思考：能否写成一个线程？"><span class="toc-number">4.</span> <span class="toc-text">思考：能否写成一个线程？</span></a></li></ol>
+                    </div>
+                </span>
+            </div>
         </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
+        
+    </div>
+</aside>
+
+
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--%E5%85%83%E8%A1%A8/" class="archive-article-date">
-  	<time datetime="2019-11-26T06:56:38.396Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-26</time>
-</a>
-        </div>
-    	 
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--%E5%85%83%E8%A1%A8/">1.【Lua基础——元表】</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">lua继承</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E5%9F%BA%E7%A1%80/" class="archive-article-date">
-  	<time datetime="2019-11-26T06:56:38.392Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-26</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E5%9F%BA%E7%A1%80/">2.【Lua面向对象设计——面向对象基础】</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">lua继承</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--%E7%B1%BB/" class="archive-article-date">
-  	<time datetime="2019-11-26T06:56:38.388Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-26</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--%E7%B1%BB/">3.【Lua面向对象设计—-类】</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">lua继承</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--%E7%BB%A7%E6%89%BF/" class="archive-article-date">
-  	<time datetime="2019-11-26T06:56:38.383Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-26</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--%E7%BB%A7%E6%89%BF/">4.【Lua面向对象设计——继承】</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">lua继承</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--BaseClass/" class="archive-article-date">
-  	<time datetime="2019-11-26T06:56:38.377Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-26</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--BaseClass/">5.【Lua面向对象设计——BaseClass】</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">lua继承</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-    
 
 
           </div>
@@ -537,8 +374,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,

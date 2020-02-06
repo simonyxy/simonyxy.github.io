@@ -18,7 +18,7 @@
 <meta property="og:locale" content="en">
 <meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;assets&#x2F;img&#x2F;UI_1.jpg">
 <meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;assets&#x2F;img&#x2F;UI_2.jpg">
-<meta property="og:updated_time" content="2020-02-06T17:17:30.156Z">
+<meta property="og:updated_time" content="2020-02-06T17:25:31.785Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;assets&#x2F;img&#x2F;UI_1.jpg">
   
@@ -177,7 +177,7 @@
 <li>之前实习的公司NGUI 有一个 检测工具 ，点击后可以自动在Hierarchy显示点击的 UI界面。自己写了一个UGUI的</li>
 </ol>
 <h1 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h1><p>整体先想一个思路：<br>*先做射线检测点击到的UI<br>*再映射到Hierarchy上</p>
-<h1 id="具体过程"><a href="#具体过程" class="headerlink" title="具体过程"></a>具体过程</h1><p>1.如何检测点击UI<br>一开始的想法是通过射线检测Ray去做，<br>从摄像机作为起点和鼠标点击的地方两个点发射一条Ray，Raycast发射射线，返回bool，里面out RaycastHit，RaycastHit保存射线发射信息。</p>
+<h1 id="具体过程"><a href="#具体过程" class="headerlink" title="具体过程"></a>具体过程</h1><p>1.如何检测点击UI<br>一开始的想法是通过射线检测Ray去做，<br>从摄像机作为起点和鼠标点击的地方两个点发射一条Ray，Raycast发射射线，返回bool，里面碰撞信息返回在out hitInfo，RaycastHit保存射线发射信息。</p>
 <p>通过查 out hitInfo，hitInfo遍历物体出来查看他们所有的层级，层级属于UI界面的保留，然后去查询是哪个。但是因为项目里面的Layer是不动的UI界面也会有重叠，有的大有的小，物体的z轴和深度也是有不同。<br>但是还是试了一下，发现不行，说明UGUI的检测不是用碰撞器去访问的<br>NGUI需要碰撞器，UGUI不需要，NGUI可以用这个方法，那UGUI是怎么检测碰撞的？</p>
 <p>查一下</p>
 <p>后面看了跟射线和UI相关的内容，发现UGUI和NGUI确实是有不同的地方，NGUI的事件机制其实就是collider的触发机制，但是UGUI在unity 里面其实已经给我们封装好了他的一个射线类型，射线 通过检测GraphicRaycaster去查看碰撞的是不是UGUI的内容<br><img src="/assets/img/UI_1.jpg" alt="avatar"></p>
@@ -315,6 +315,15 @@
 
   
 <nav id="article-nav">
+  
+    <a href="/2020/02/07/%E6%8E%A2%E7%A9%B6SetActive%E5%8F%8A%E4%BC%98%E5%8C%96/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          探究SetActive及优化
+        
+      </div>
+    </a>
   
   
     <a href="/2019/11/26/%E6%89%A9%E5%B1%95%E5%AF%B9%E8%B1%A1%E6%B1%A0/" id="article-nav-older" class="article-nav-link-wrap">
