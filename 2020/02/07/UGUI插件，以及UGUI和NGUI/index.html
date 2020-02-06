@@ -6,18 +6,21 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>1.【Lua基础——元表】 | Simon&#39;s Blog</title>
+  <title>自写UGUI插件，以及对比NGUI | Simon&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="在学习Lua面向对象设计前，我们首先得掌握一些基础知识。">
-<meta name="keywords" content="lua继承">
+  <meta name="description" content="前言 Mmorpg游戏里面的ui界面很多，每次要找都要一个一个点开比较麻烦">
+<meta name="keywords" content="UI">
 <meta property="og:type" content="article">
-<meta property="og:title" content="1.【Lua基础——元表】">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;26&#x2F;lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--%E5%85%83%E8%A1%A8&#x2F;index.html">
+<meta property="og:title" content="自写UGUI插件，以及对比NGUI">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;02&#x2F;07&#x2F;UGUI%E6%8F%92%E4%BB%B6%EF%BC%8C%E4%BB%A5%E5%8F%8AUGUI%E5%92%8CNGUI&#x2F;index.html">
 <meta property="og:site_name" content="Simon&#39;s Blog">
-<meta property="og:description" content="在学习Lua面向对象设计前，我们首先得掌握一些基础知识。">
+<meta property="og:description" content="前言 Mmorpg游戏里面的ui界面很多，每次要找都要一个一个点开比较麻烦">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2019-11-26T07:22:53.443Z">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;assets&#x2F;img&#x2F;UI_1.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;assets&#x2F;img&#x2F;UI_2.jpg">
+<meta property="og:updated_time" content="2020-02-06T17:17:30.156Z">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;assets&#x2F;img&#x2F;UI_1.jpg">
   
     <link rel="alternative" href="/atom.xml" title="Simon&#39;s Blog" type="application/atom+xml">
   
@@ -149,31 +152,56 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-lua面向对象设计--元表" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-UGUI插件，以及UGUI和NGUI" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      1.【Lua基础——元表】
+      自写UGUI插件，以及对比NGUI
     </h1>
   
 
         
-        <a href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--%E5%85%83%E8%A1%A8/" class="archive-article-date">
-  	<time datetime="2019-11-26T06:56:38.396Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-26</time>
+        <a href="/2020/02/07/UGUI%E6%8F%92%E4%BB%B6%EF%BC%8C%E4%BB%A5%E5%8F%8AUGUI%E5%92%8CNGUI/" class="archive-article-date">
+  	<time datetime="2020-02-06T17:02:39.882Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-02-07</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>在学习Lua面向对象设计前，我们首先得掌握一些基础知识。</p>
-<a id="more"></a>
-<p>元表<br>首先元表，什么是元表呢？比方说我们一下例子：<br>t = {}<br>print(t.a) –这里试图打印t并不存在的成员a<br>显然，结果是nil。输出为nil的原因很简单，t中并没有a这个成员，这符合我们平时对表的认知。但对于Lua表，如果t有元表，情况就不同了。<br>Lua的表本质其实是个类似HashMap的东西，其元素是很多的Key-Value对，如果尝试访问了一个表中并不存在的元素时，就会触发Lua的一套查找机制，也是凭借这个机制来模拟了类似“类”的行为。<br>什么是元表：<br>元表像是一个“操作指南”，里面包含了一系列操作的解决方案，例如<strong>index方法就是定义了这个表在索引失败的情况下该怎么办。<br>__index元方法：<br>按照之前的说法，如果A的元表是B，那么如果访问了一个A中不存在的成员，就会访问查找B中有没有这个成员。这个过程大体是这样，但却不完全是这样，实际上，即使将A的元表设置为B，而且B中也确实有这个成员，返回结果仍然会是nil，原因就是B的</strong>index元方法没有赋值。别忘了我们之前说过的：“元表是一个操作指南”，定义了元表，只是有了操作指南，但不应该在操作指南里面去查找元素，而<strong>index方法则是“操作指南”的“索引失败时该怎么办”。所以：<br>father = {<br>    house=1<br>}<br>son = {<br>    car=1<br>}<br>setmetatable(son, father) –把son的metatable设置为father<br>print(son.house)  –结果仍然为nil<br>但如果把代码改为<br>father = {<br>    house=1<br>}<br>father.</strong>index = father – 把father的<strong>index方法指向自己<br>son = {<br>    car=1<br>}<br>setmetatable(son, father)<br>print(son.house)<br>结果为1，符合预期。<br>到这里，来个总结：<br>在上述例子中，访问son.house时，son中没有house这个成员，但Lua接着发现son有元表father，注意：此时，Lua并不是直接在father中找名为house的成员，而是调用father的</strong>index方法，如果<strong>index方法为nil，则返回nil，如果是一个表（上例中father的</strong>index方法等于自己，就是这种情况），那么就到<strong>index方法所指的这个表中查找名为house的成员，于是，最终找到了house成员。<br>注：</strong>index方法除了可以是一个表，还可以是一个函数，如果是一个函数，__index方法被调用时将返回该函数的返回值。</p>
-<p>所以，Lua查找一个表元素时的规则，其实就是如下3个步骤:<br>1.在表中查找，如果找到，返回该元素，找不到则继续<br>2.判断该表是否有元表（操作指南），如果没有元表，返回nil，有元表则继续<br>3.判断元表有没有<strong>index方法，如果</strong>index方法为nil，则返回nil；如果<strong>index方法是一个表，则重复1、2、3；如果</strong>index方法是一个函数，则返回该函数的返回值</p>
-<p>有兴趣的同学可以去学习更多的元表知识，比如__add, __mul<br>博客地址：<a href="http://www.cnblogs.com/nepaul/archive/2011/08/18/2143936.html">http://www.cnblogs.com/nepaul/archive/2011/08/18/2143936.html</a></p>
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><ol>
+<li>Mmorpg游戏里面的ui界面很多，每次要找都要一个一个点开比较麻烦<a id="more"></a></li>
+<li>之前实习的公司NGUI 有一个 检测工具 ，点击后可以自动在Hierarchy显示点击的 UI界面。自己写了一个UGUI的</li>
+</ol>
+<h1 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h1><p>整体先想一个思路：<br>*先做射线检测点击到的UI<br>*再映射到Hierarchy上</p>
+<h1 id="具体过程"><a href="#具体过程" class="headerlink" title="具体过程"></a>具体过程</h1><p>1.如何检测点击UI<br>一开始的想法是通过射线检测Ray去做，<br>从摄像机作为起点和鼠标点击的地方两个点发射一条Ray，Raycast发射射线，返回bool，里面out RaycastHit，RaycastHit保存射线发射信息。</p>
+<p>通过查 out hitInfo，hitInfo遍历物体出来查看他们所有的层级，层级属于UI界面的保留，然后去查询是哪个。但是因为项目里面的Layer是不动的UI界面也会有重叠，有的大有的小，物体的z轴和深度也是有不同。<br>但是还是试了一下，发现不行，说明UGUI的检测不是用碰撞器去访问的<br>NGUI需要碰撞器，UGUI不需要，NGUI可以用这个方法，那UGUI是怎么检测碰撞的？</p>
+<p>查一下</p>
+<p>后面看了跟射线和UI相关的内容，发现UGUI和NGUI确实是有不同的地方，NGUI的事件机制其实就是collider的触发机制，但是UGUI在unity 里面其实已经给我们封装好了他的一个射线类型，射线 通过检测GraphicRaycaster去查看碰撞的是不是UGUI的内容<br><img src="/assets/img/UI_1.jpg" alt="avatar"></p>
+<p>Unity的GraphicRaycaster也帮我们解决了当有多个UI会有层级阻挡问题：UI组件勾选Raycast Target能够按照层级关系阻挡穿透，但其阻挡的是UI组件之间的射线穿透。GraphicRaycaster的源码中有 var foundGraphics = GraphicRegistry.GetGraphicsForCanvas(canvas);只会判断Graphic对象，这是UI元素的父类。调整一下，可以让点击的时候射线透不过去。</p>
+<p>Ok，阻挡的。也就是说，ngui 通过普通射线检测碰撞盒去判断 是否点击UI<br>Ugui  里用GraphicRaycaster组件来检测射线 UI元素的事件，并且把结果都保存在EventSystem里面！！！！</p>
+<p>哦，那岂不是在EventSystem里面就能访问到点击了什么UI吗？？<br>答案是是的<br>Unity自带的</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> UnityEngine.EventSystems;</span><br></pre></td></tr></table></figure>
+<p>头文件里面可以访问EventSystem<br>并且点击数据都会保存在pointerEventData 类里面<br>（附加Eventsystem和pointEventData的类）<br>Ok，那剩下只需要去稍微看一下EventSystem里面的属性和方法即可</p>
+<ol>
+<li>使用unityEditor 类把这个文件添加到菜单栏<br>因为不是每次都要用的，把脚本挂上main_camera ，然后把它active 为false。<br>然后用unityeditor把它关联了，点击菜单才点击运行</li>
+</ol>
+<p>顺便优化一下方法让他有更多功能</p>
+<h1 id="我的初代代码"><a href="#我的初代代码" class="headerlink" title="我的初代代码"></a>我的初代代码</h1><figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> UnityEngine.EventSystems;</span><br><span class="line"><span class="keyword">using</span> UnityEngine.UI;</span><br><span class="line"><span class="keyword">using</span> UnityEditor;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">UICheckTool</span> : <span class="title">MonoBehaviour</span> &#123;</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">    [<span class="meta">MenuItem(<span class="meta-string">"FindUI/找到UI"</span>)</span>]  <span class="comment">//保存后就会在unity菜单栏中出现MyMenu的菜单栏</span></span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">FindUI</span>(<span class="params"></span>)          <span class="comment">//和二级目录Do Something,点击它就会执行DoSomething()方法</span></span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">    GameObject go = GameObject.Find(<span class="string">"MainCamera"</span>);</span><br><span class="line">        go.AddComponent&lt;UICheckTool&gt;();</span><br><span class="line">        go.GetComponent&lt;UICheckTool&gt;().uitype =FindType.UITOP;</span><br><span class="line">    &#125;</span><br><span class="line">    [<span class="meta">MenuItem(<span class="meta-string">"FindUI/找到底层UI"</span>)</span>]</span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">FindUI2</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        GameObject go = GameObject.Find(<span class="string">"MainCamera"</span>);</span><br><span class="line">        go.AddComponent&lt;UICheckTool&gt;();</span><br><span class="line">        go.GetComponent&lt;UICheckTool&gt;().uitype =FindType.UIBOTTOM;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">   [<span class="meta">MenuItem(<span class="meta-string">"FindUI/找到UI停止游戏"</span>)</span>]</span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">FindCanvas</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        GameObject go = GameObject.Find(<span class="string">"MainCamera"</span>);</span><br><span class="line">        go.AddComponent&lt;UICheckTool&gt;();</span><br><span class="line">        go.GetComponent&lt;UICheckTool&gt;().uitype =FindType.StopUI;</span><br><span class="line">    &#125;   </span><br><span class="line"></span><br><span class="line">    <span class="keyword">bool</span> isTop ;<span class="comment">//是否反映最上层UI</span></span><br><span class="line">    <span class="keyword">private</span> EventSystem _mEventSystem;</span><br><span class="line">    PointerEventData pointerEventData;</span><br><span class="line">    <span class="keyword">enum</span> FindType&#123;</span><br><span class="line">        UITOP,</span><br><span class="line">        UIBOTTOM,</span><br><span class="line">        StopUI,</span><br><span class="line">    &#125;</span><br><span class="line">    FindType uitype; <span class="comment">//查找类型</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Update</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"><span class="keyword">if</span> (Input.GetMouseButtonDown(<span class="number">0</span>))</span><br><span class="line">&#123;   </span><br><span class="line">            IsRaycastUI(uitype);</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">IsRaycastUI</span>(<span class="params">FindType uitype</span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        <span class="keyword">if</span> (EventSystem.current == <span class="literal">null</span>)</span><br><span class="line">        &#123;    Debug.Log(<span class="string">"nothing "</span>);&#125;</span><br><span class="line">            <span class="comment">//鼠标点击事件</span></span><br><span class="line">            pointerEventData = <span class="keyword">new</span> PointerEventData(EventSystem.current);</span><br><span class="line">            <span class="comment">//设置鼠标位置</span></span><br><span class="line">            pointerEventData.position = Input.mousePosition;</span><br><span class="line">            <span class="comment">//射线检测返回结果</span></span><br><span class="line">            List&lt;RaycastResult&gt; results = <span class="keyword">new</span> List&lt;RaycastResult&gt;();</span><br><span class="line">            <span class="comment">//检测UI</span></span><br><span class="line">            <span class="comment">//graphicRaycaster.Raycast(pointerEventData, results);</span></span><br><span class="line">            EventSystem.current.RaycastAll(pointerEventData, results);</span><br><span class="line">            <span class="comment">//打印结果</span></span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; results.Count; i++)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">if</span>(uitype == FindType.UITOP)</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">if</span>(results[i].depth != <span class="number">0</span>)<span class="comment">//脚本里面depth == 0 的是背景板 ， UI都是有depth的   </span></span><br><span class="line">                    &#123;           </span><br><span class="line">                        <span class="comment">//调用显示到Hierarchy中</span></span><br><span class="line">                        EditorGUIUtility.PingObject(results[i].gameObject);</span><br><span class="line">                        Selection.activeGameObject =results[i].gameObject;  </span><br><span class="line">                        <span class="keyword">break</span>;   <span class="comment">//break 的原因是， 只返回最上层的UI            </span></span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span>(uitype ==FindType.UIBOTTOM)&#123;</span><br><span class="line">                    <span class="keyword">if</span>(results[i].depth != <span class="number">0</span>)<span class="comment">//脚本里面depth == 0 的是背景板 ， UI都是有depth的   </span></span><br><span class="line">                    &#123;           </span><br><span class="line">                        <span class="comment">//调用显示到Hierarchy中</span></span><br><span class="line">                        EditorGUIUtility.PingObject(results[i].gameObject);</span><br><span class="line">                        Selection.activeGameObject =results[i].gameObject;          </span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span>(uitype==FindType.StopUI)</span><br><span class="line">                &#123;   </span><br><span class="line">                    <span class="keyword">if</span>(results[i].depth != <span class="number">0</span>)<span class="comment">//脚本里面depth == 0 的是背景板 ， UI都是有depth的   </span></span><br><span class="line">                    &#123;           </span><br><span class="line">                        <span class="comment">//调用显示到Hierarchy中                   </span></span><br><span class="line">                        EditorGUIUtility.PingObject(results[i].gameObject);</span><br><span class="line">                        Selection.activeGameObject =results[i].gameObject;</span><br><span class="line">                        <span class="keyword">if</span>(Time.timeScale == <span class="number">0</span>)&#123;</span><br><span class="line">                            Time.timeScale =<span class="number">1</span>;</span><br><span class="line">                        &#125;</span><br><span class="line">                        <span class="keyword">else</span> &#123;</span><br><span class="line">                            Time.timeScale =<span class="number">0</span>;</span><br><span class="line">                        &#125;</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    &#125;   </span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//返回值&gt;0，即点击到UI</span></span><br><span class="line">        <span class="keyword">return</span> results.Count &gt; <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Ok现在就可以实现在游戏运行的选中想要的ui对应<br><img src="/assets/img/UI_2.jpg" alt="avatar"></p>
+<h1 id="思考：能否写成一个线程？"><a href="#思考：能否写成一个线程？" class="headerlink" title="思考：能否写成一个线程？"></a>思考：能否写成一个线程？</h1><h1 id="其他一些的UGUI和NGUI的区别"><a href="#其他一些的UGUI和NGUI的区别" class="headerlink" title="其他一些的UGUI和NGUI的区别"></a>其他一些的UGUI和NGUI的区别</h1><ol>
+<li>NGUI本质是unity 的一个插件 ， 所以用的语言是C#， UGUI内置在unity中，unity用c++写的</li>
+<li>NGUI注重图集概念，UGUI同一个prefab下面的的图会自己打成一个图集。但是对于512*512或者以上的图片，尽量都分开打图集。</li>
+<li>一些其他插件的，比如NGUI里面内置的动画itween， UGUI里面的Mask。（Mask比较特殊，因为他是会另外计算DrawCall）</li>
+<li>UGUI引入锚点的概念。NGUI宽高比</li>
+<li>NGUI的渲染前后顺序是通过Widget的Depth，而UGUI渲染顺序根据Hierarchy的顺序，越下面渲染在顶层.<br>UGUI的同一类型的组件放在一起，假如他们是同一材质和同一贴图， 就会自动合并在一起调用drawcall</li>
+<li>.Canval 的z轴不是0的话也没有办法合并drawcall</li>
+</ol>
+<p>作者：Simon YXY</p>
 
       
 
@@ -218,7 +246,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">lua继承</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">UI</a>
         		</li>
       		
 		</ul>
@@ -274,7 +302,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--%E5%85%83%E8%A1%A8/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2020/02/07/UGUI%E6%8F%92%E4%BB%B6%EF%BC%8C%E4%BB%A5%E5%8F%8AUGUI%E5%92%8CNGUI/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -288,18 +316,9 @@
   
 <nav id="article-nav">
   
-    <a href="/2019/11/26/%E5%AF%B9%E8%B1%A1%E6%B1%A0%E7%9A%84%E7%94%9F%E6%88%90/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          对于特殊弹药的对象池生成
-        
-      </div>
-    </a>
   
-  
-    <a href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E5%9F%BA%E7%A1%80/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">2.【Lua面向对象设计——面向对象基础】</div>
+    <a href="/2019/11/26/%E6%89%A9%E5%B1%95%E5%AF%B9%E8%B1%A1%E6%B1%A0/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">扩展对象池</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -326,7 +345,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    目录，不存在的…
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#思路"><span class="toc-number">2.</span> <span class="toc-text">思路</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#具体过程"><span class="toc-number">3.</span> <span class="toc-text">具体过程</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#我的初代代码"><span class="toc-number">4.</span> <span class="toc-text">我的初代代码</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#思考：能否写成一个线程？"><span class="toc-number">5.</span> <span class="toc-text">思考：能否写成一个线程？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#其他一些的UGUI和NGUI的区别"><span class="toc-number">6.</span> <span class="toc-text">其他一些的UGUI和NGUI的区别</span></a></li></ol>
                     </div>
                 </span>
             </div>
