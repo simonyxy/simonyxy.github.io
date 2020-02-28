@@ -6,20 +6,18 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>对于特殊弹药的对象池生成 | Simon&#39;s Blog</title>
+  <title>Unity的内存管理 | Simon&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="前面的开发因为没有记录，就略了。后续有时间也许会补充，今天写我自己生成一个炸弹对象池的方法">
-<meta name="keywords" content="我的射击游戏">
+  <meta name="description" content="Unity内存管理和性能优化：https:&#x2F;&#x2F;blog.csdn.net&#x2F;jingangxin666&#x2F;article&#x2F;details&#x2F;82564238  C#的垃圾回收机制（分代）https:&#x2F;&#x2F;www.cnblogs.com&#x2F;qixuejia&#x2F;p&#x2F;3957966.html   – 稍微总结一下:对GC实际的理解上，我更喜欢把CLR比作是房东，将托管堆比作是一间大公寓，每次有对象（根）在CLR登">
+<meta name="keywords" content="Unity学习">
 <meta property="og:type" content="article">
-<meta property="og:title" content="对于特殊弹药的对象池生成">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;26&#x2F;%E5%AF%B9%E8%B1%A1%E6%B1%A0%E7%9A%84%E7%94%9F%E6%88%90&#x2F;index.html">
+<meta property="og:title" content="Unity的内存管理">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;02&#x2F;29&#x2F;unity%E5%86%85%E5%AD%98&#x2F;index.html">
 <meta property="og:site_name" content="Simon&#39;s Blog">
-<meta property="og:description" content="前面的开发因为没有记录，就略了。后续有时间也许会补充，今天写我自己生成一个炸弹对象池的方法">
+<meta property="og:description" content="Unity内存管理和性能优化：https:&#x2F;&#x2F;blog.csdn.net&#x2F;jingangxin666&#x2F;article&#x2F;details&#x2F;82564238  C#的垃圾回收机制（分代）https:&#x2F;&#x2F;www.cnblogs.com&#x2F;qixuejia&#x2F;p&#x2F;3957966.html   – 稍微总结一下:对GC实际的理解上，我更喜欢把CLR比作是房东，将托管堆比作是一间大公寓，每次有对象（根）在CLR登">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;assets&#x2F;img&#x2F;bulletpool.jpg">
-<meta property="og:updated_time" content="2019-12-02T08:04:32.859Z">
+<meta property="og:updated_time" content="2020-02-28T19:12:19.915Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;assets&#x2F;img&#x2F;bulletpool.jpg">
   
     <link rel="alternative" href="/atom.xml" title="Simon&#39;s Blog" type="application/atom+xml">
   
@@ -151,40 +149,48 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-对象池的生成" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-unity内存" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      对于特殊弹药的对象池生成
+      Unity的内存管理
     </h1>
   
 
         
-        <a href="/2019/11/26/%E5%AF%B9%E8%B1%A1%E6%B1%A0%E7%9A%84%E7%94%9F%E6%88%90/" class="archive-article-date">
-  	<time datetime="2019-11-26T09:35:15.560Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-26</time>
+        <a href="/2020/02/29/unity%E5%86%85%E5%AD%98/" class="archive-article-date">
+  	<time datetime="2020-02-28T18:42:44.892Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-02-29</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>前面的开发因为没有记录，就略了。后续有时间也许会补充，今天写我自己生成一个炸弹对象池的方法</p>
-<a id="more"></a>
-
-<h1 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h1><p>对于一个射击游戏，子弹类的生成是会占用一部分内存的，通过享元模式的一种：对象池 去优化他<br>      对象池：<br>      1.初始化的时候生成bulletpool,初始化一些子弹对象<br>      2.当子弹用完了之后，不删除而是把子弹对象放回bulletpool，重复利用<br>      3.调用对象池时子弹对象不足的时候生成一个新对象并且加入到对象池中</p>
-<h1 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h1><p>– 1 .在unity上创建一个bulletpool空物体作为对象池，写一个对象池的脚本 BulletsPool 挂上去用于创建对象池，在里面通过创建List保存子弹对象。<br>–    在里面写一个获取方法（如果后续子弹类型很多可以把他抽象化成接口或者添加一个参数类型），该方法用来被玩家调用获取（SetActive（true））或者生成子弹（生成ADD到List中）</p>
-<p>– 2. 在玩家的脚本上面Update中写一个射击方法，这个方法可以调用获得一个对象并且把它的位置初始化到玩家的位置上</p>
-<p>– 3. 对子弹prefab上面添加一个bullet的脚本，这个脚本用来给子弹一个初始化的发射力（写在OnEnable上循环调用），并且当子弹碰撞到物体了之后或者一定时间消失后，放回到对象池中的方法 （放回到对象池其实就是SetActive       （false）即可）</p>
-<h1 id="1-BulletsPool脚本"><a href="#1-BulletsPool脚本" class="headerlink" title="1.BulletsPool脚本"></a>1.BulletsPool脚本</h1><figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">BulletsPool</span> : <span class="title">MonoBehaviour</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> BulletsPool bulletsPoolInstance;      <span class="comment">//子弹池实例，被其他脚本调用方便</span></span><br><span class="line">    <span class="keyword">public</span> GameObject boomObj;                        <span class="comment">//子弹perfabs</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">int</span> pooledAmount = <span class="number">5</span>;                        <span class="comment">//子弹池初始大小</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">bool</span> lockPoolSize = <span class="literal">false</span>;                   <span class="comment">//是否锁定子弹池大小</span></span><br><span class="line">    <span class="keyword">private</span> List&lt;GameObject&gt; pooledObjects;             <span class="comment">//子弹池链表</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> currentIndex = <span class="number">0</span>;                       <span class="comment">//当前指向链表位置索引</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">Awake</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        bulletsPoolInstance = <span class="keyword">this</span>;                     <span class="comment">//把本对象作为实例</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Start</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        pooledObjects = <span class="keyword">new</span> List&lt;GameObject&gt;();         <span class="comment">//初始化链表</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; pooledAmount; ++i)</span><br><span class="line">        &#123;</span><br><span class="line">            GameObject obj = Instantiate(boomObj);    <span class="comment">//创建子弹对象</span></span><br><span class="line">            obj.SetActive(<span class="literal">false</span>);                       <span class="comment">//设置子弹无效</span></span><br><span class="line">            pooledObjects.Add(obj);                     <span class="comment">//把子弹添加到链表（对象池）中</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> GameObject <span class="title">GetPooledObject</span>(<span class="params"></span>)                 <span class="comment">//获取对象池中可以使用的子弹。</span></span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; pooledObjects.Count; ++i)   <span class="comment">//把对象池遍历一遍</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">//这里简单优化了一下，每一次遍历都是从上一次被使用的子弹的下一个，而不是每次遍历从0开始。</span></span><br><span class="line">            <span class="comment">//例如上一次获取了第4个子弹，currentIndex就为5，这里从索引5开始遍历，这是一种贪心算法。</span></span><br><span class="line">            <span class="keyword">int</span> temI = (currentIndex + i) % pooledObjects.Count;</span><br><span class="line">            <span class="keyword">if</span> (!pooledObjects[temI].activeInHierarchy) <span class="comment">//判断该子弹是否在场景中激活。</span></span><br><span class="line">             &#123; </span><br><span class="line">                currentIndex = (temI + <span class="number">1</span>) % pooledObjects.Count;</span><br><span class="line">                <span class="keyword">return</span> pooledObjects[temI];             <span class="comment">//找到没有被激活的子弹并返回</span></span><br><span class="line">             &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//如果遍历完一遍子弹库发现没有可以用的，执行下面</span></span><br><span class="line">        <span class="keyword">if</span> (!lockPoolSize)                               <span class="comment">//如果没有锁定对象池大小，创建子弹并添加到对象池中。</span></span><br><span class="line">        &#123; </span><br><span class="line">            GameObject obj = Instantiate(boomObj);</span><br><span class="line">            obj.transform.parent = <span class="keyword">this</span>.transform;       <span class="comment">//生成到buttlepool下</span></span><br><span class="line">            pooledObjects.Add(obj);</span><br><span class="line">            <span class="keyword">return</span> obj;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//如果遍历完没有而且锁定了对象池大小，返回空。</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h1 id="2-Player的Update中添加-（其他略"><a href="#2-Player的Update中添加-（其他略" class="headerlink" title="2.Player的Update中添加 （其他略)"></a>2.Player的Update中添加 （其他略)</h1><figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (BoomAttackColdState ==<span class="literal">false</span> &amp;&amp; Input.GetKey(KeyCode.F)  )               <span class="comment">//可以发射子弹时间</span></span><br><span class="line">&#123;</span><br><span class="line">    BoomAttackColdState = <span class="literal">true</span>;                                             <span class="comment">//是否处于发射冷却状态（这个我写了个计时器略）</span></span><br><span class="line">    <span class="comment">//获取对象池中的子弹</span></span><br><span class="line">    GameObject bullet = BulletsPool.bulletsPoolInstance.GetPooledObject();  <span class="comment">//调用对象池中的方法       </span></span><br><span class="line">    selfAnimator.SetInteger(<span class="string">"WeaponType_int"</span>, <span class="number">4</span>);                           <span class="comment">//动画略</span></span><br><span class="line">    <span class="keyword">if</span> (bullet != <span class="literal">null</span>)                  <span class="comment">//不为空时执行</span></span><br><span class="line">    &#123;</span><br><span class="line">        bullet.SetActive(<span class="literal">true</span>);         <span class="comment">//激活子弹并初始化子弹的位置</span></span><br><span class="line">        bullet.transform.position = shotTransform.position;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">&#123;</span><br><span class="line">    selfAnimator.SetInteger(<span class="string">"WeaponType_int"</span>, <span class="number">0</span>);                            <span class="comment">//动画略</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h1 id="3-Bullet脚本"><a href="#3-Bullet脚本" class="headerlink" title="3.Bullet脚本"></a>3.Bullet脚本</h1><figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">bullet01</span> : <span class="title">MonoBehaviour</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> Rigidbody self_rig;       <span class="comment">//用于添加发射力的自身刚体（略）</span></span><br><span class="line">    <span class="keyword">public</span> ParticleSystem boom;       <span class="comment">//子弹的暴炸粒子效果（略）</span></span><br><span class="line">    <span class="keyword">float</span> force = <span class="number">100</span>;                </span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">GetD</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        gameObject.SetActive(<span class="literal">false</span>); </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Awake</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        <span class="comment">//这里可能会消耗一些性能，因为没生成一个子弹都要去获取player 的刚体，后面优化再注意改动</span></span><br><span class="line">        self_rig = <span class="keyword">this</span>.GetComponent&lt;Rigidbody&gt;();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">OnEnable</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        boom.Play();                    <span class="comment">//这个粒子特效是被我设为3s后暴炸，所以设定了一个播放例子效果</span></span><br><span class="line">        Invoke(<span class="string">"GetD"</span>, <span class="number">3.5f</span>);           <span class="comment">//因为是个炸弹，他碰到物体也不会直接暴炸，定时3.5s放回对象池方法</span></span><br><span class="line">        AddForce(force);                <span class="comment">//添加一个力</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function">Void <span class="title">AddForce</span>(<span class="params"><span class="keyword">float</span> force</span>)</span> &#123;  ... 略 &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>最终效果：<br><img src="/assets/img/bulletpool.jpg" alt="avatar"></p>
-<p>作者：Simon YXY</p>
+        <ul>
+<li><p>Unity内存管理和性能优化：<br><a href="https://blog.csdn.net/jingangxin666/article/details/82564238">https://blog.csdn.net/jingangxin666/article/details/82564238</a></p>
+</li>
+<li><p>C#的垃圾回收机制（分代）<br><a href="https://www.cnblogs.com/qixuejia/p/3957966.html">https://www.cnblogs.com/qixuejia/p/3957966.html</a></p>
+</li>
+</ul>
+<p>– 稍微总结一下:<br>对GC实际的理解上，我更喜欢把CLR比作是房东，将托管堆比作是一间大公寓，每次有对象（根）在CLR登记后，CLR就会给它提供一个身份证明（引用地址），记录到房客租赁登记表上（线程栈）。因为这件大公寓空间仍然是有限的，房客的重要性也不一样，所以大公寓将不同的房间划分为天字号，地字号，人字号三种房间（选择预算），房东比较重感情，所以刚来的房客嘛，管你有钱没钱，先给我去人字号带着。每次人字号房间不够住的时候，房东就会安排清理工（GC）来安排房间归属了。对人字号房间的房客，清理工会一个个检查过去，看看有没有房客和房东关系疏远了（不可达），这些没心没肺的（也可能是房东主动提出绝交）全都滚出去，那些剩下来的再安排到地房间去。假如地字号房间没满，清理工就不检查了（代的性能优化），满了再依旧安排。假如你是地字号的，就算你和房东绝交了，也会考虑再让你住些日子。那如果有时候发现一些房客就是暂住下，人数又多，离开又早，那清理工就会调整下房间，把各层级的房间数目再分配下<br>– C# 是分代收集算法(Generational Collection)<br>对内存对象进行分代标记，避免全量垃圾回收带来的性能消耗。</p>
+<ul>
+<li>Lua的垃圾回收机制 以及对比<br><a href="https://www.cnblogs.com/zblade/p/11357203.html">https://www.cnblogs.com/zblade/p/11357203.html</a></li>
+</ul>
+<p>–稍微总结一下：<br>Lua 5.0 和前1. 双色标记清除算法<br>在Lua5.0中的GC，是一次性不可被打断的操作，执行的算法是Mark-and-sweep算法，在执行GC操作的时候，会设置2种颜色，黑色和白色，然后执行gc的流程<br>5.0后2. 三色标记清除算法<br>虽然是三色，本质是四色，颜色分为三种:</p>
+<ul>
+<li><p>Assetbudle 介绍：<br><a href="https://blog.csdn.net/qq_33537945/article/details/79326857">https://blog.csdn.net/qq_33537945/article/details/79326857</a><br><a href="https://www.cnblogs.com/zblade/p/9198647.html">https://www.cnblogs.com/zblade/p/9198647.html</a></p>
+</li>
+<li><p>Assetbundle 机制和内存管理:<br><a href="https://blog.csdn.net/u012529088/article/details/54984479?utm_source=itdadao&amp;utm_medium=referral">https://blog.csdn.net/u012529088/article/details/54984479?utm_source=itdadao&amp;utm_medium=referral</a><br><a href="https://blog.csdn.net/andyhebear/article/details/50977295">https://blog.csdn.net/andyhebear/article/details/50977295</a></p>
+</li>
+<li><p>资源内存优化<br><a href="https://blog.csdn.net/a133900029/article/details/80388072">https://blog.csdn.net/a133900029/article/details/80388072</a><br><a href="https://blog.csdn.net/wotingdaonile/article/details/80111088">https://blog.csdn.net/wotingdaonile/article/details/80111088</a></p>
+</li>
+<li><p>至于 代码内存的优化<br>比如用枚举代替类<br>少调用GetComponent等和unity交互的函数<br>String 和StringBuilder 和StringBuffer<br>对象池 ….等待自己慢慢积累把~</p>
+</li>
+</ul>
+<p>作者：SimonYXY</p>
 
       
 
@@ -229,7 +235,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">我的射击游戏</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Unity学习</a>
         		</li>
       		
 		</ul>
@@ -285,7 +291,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/11/26/%E5%AF%B9%E8%B1%A1%E6%B1%A0%E7%9A%84%E7%94%9F%E6%88%90/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2020/02/29/unity%E5%86%85%E5%AD%98/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -299,18 +305,9 @@
   
 <nav id="article-nav">
   
-    <a href="/2019/11/26/%E6%89%A9%E5%B1%95%E5%AF%B9%E8%B1%A1%E6%B1%A0/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          扩展对象池
-        
-      </div>
-    </a>
   
-  
-    <a href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--%E5%85%83%E8%A1%A8/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">1.【Lua基础——元表】</div>
+    <a href="/2020/02/07/%E6%8E%A2%E7%A9%B6SetActive%E5%8F%8A%E4%BC%98%E5%8C%96/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">探究SetActive及优化</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -337,7 +334,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#前言："><span class="toc-number">1.</span> <span class="toc-text">前言：</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#思路："><span class="toc-number">2.</span> <span class="toc-text">思路：</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1-BulletsPool脚本"><span class="toc-number">3.</span> <span class="toc-text">1.BulletsPool脚本</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-Player的Update中添加-（其他略"><span class="toc-number">4.</span> <span class="toc-text">2.Player的Update中添加 （其他略)</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-Bullet脚本"><span class="toc-number">5.</span> <span class="toc-text">3.Bullet脚本</span></a></li></ol>
+                    目录，不存在的…
                     </div>
                 </span>
             </div>
