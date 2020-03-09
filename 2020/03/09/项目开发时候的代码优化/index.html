@@ -6,15 +6,17 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Tag: UI | Simon&#39;s Blog</title>
+  <title>Unity的内存管理 | Simon&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="记录我的游戏生涯">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Simon&#39;s Blog">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;tags&#x2F;UI&#x2F;index.html">
+  <meta name="description" content="mono托管堆的东西~~">
+<meta name="keywords" content="Unity学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Unity的内存管理">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;03&#x2F;09&#x2F;%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E6%97%B6%E5%80%99%E7%9A%84%E4%BB%A3%E7%A0%81%E4%BC%98%E5%8C%96&#x2F;index.html">
 <meta property="og:site_name" content="Simon&#39;s Blog">
-<meta property="og:description" content="记录我的游戏生涯">
+<meta property="og:description" content="mono托管堆的东西~~">
 <meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2020-03-09T13:25:46.648Z">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="/atom.xml" title="Simon&#39;s Blog" type="application/atom+xml">
@@ -147,98 +149,219 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-项目开发时候的代码优化" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2020" class="archive-year">2020</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2020/02/07/%E6%8E%A2%E7%A9%B6SetActive%E5%8F%8A%E4%BC%98%E5%8C%96/" class="archive-article-date">
-  	<time datetime="2020-02-06T17:30:18.077Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-02-07</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/02/07/%E6%8E%A2%E7%A9%B6SetActive%E5%8F%8A%E4%BC%98%E5%8C%96/">探究SetActive及优化</a>
+    <h1 class="article-title" itemprop="name">
+      Unity的内存管理
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2020/03/09/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E6%97%B6%E5%80%99%E7%9A%84%E4%BB%A3%E7%A0%81%E4%BC%98%E5%8C%96/" class="archive-article-date">
+  	<time datetime="2020-03-09T13:19:01.811Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-03-09</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>mono托管堆的东西~~</p>
+<a id="more"></a>
+<h1 id="unity-代码上的优化"><a href="#unity-代码上的优化" class="headerlink" title="unity 代码上的优化"></a>unity 代码上的优化</h1><h2 id="1-减少GC（减少引用）"><a href="#1-减少GC（减少引用）" class="headerlink" title="1.减少GC（减少引用）"></a>1.减少GC（减少引用）</h2><p><strong>Mono内存管理策略</strong><br>已用内存指的是mono实际需要使用的内存，堆内存指的是mono向操作系统申请的内存，两者的差值就是mono的空闲内存。</p>
+<p>当mono需要分配内存时，会先查看空闲内存是否足够，如果足够的话，直接在空闲内存中分配，否则mono会进行一次GC以释放更多的空闲内存，如果GC之后仍然没有足够的空闲内存，则mono会向操作系统申请内存，并扩充堆内存。GC释放的内存只会留给mono使用，并不会交还给操作系统，也就意味着MONO的申请内存是<em>只增不减的</em>。所以我们需要尽量避免让mono去申请空间。</p>
+<p>GC的主要作用在于从已用内存中找出那些不再需要使用的内存，并进行释放。GC虽然可以优化内存之外，但是调用一次GC会增加CPU的开销。 所以要恰当管理mono的托管堆，少手动调用GC，GC会在空间不足的时候调用，所以我们要控制堆空间的生成。尽量减少空间的消耗。减少GC还能优化CPU,太多调用GC只会。</p>
+<p><em>减少mono托管堆里的东西可以优化内存，减少调用GC可以优化CPU</em></p>
+<ul>
+<li>Mono的托管堆，管理<br>调用GC的两种情况：1.手动调用 2.堆内存不足<br>我们要减少调用也就是减少 在代码里面对堆内存的申请</li>
+</ul>
+<p>-string . stringBuilder 和stringBuffer , ~多连接不要用string  ~用stringBuilder ~stringBuffer是考虑线程安全的情况下讨论<br>-少用foreach ，用for 。 foreach其实会涉及到迭代器IEnum（Iterator）的使用，而据传说每一次循环所产生的迭代器会带来24 Bytes的垃圾。那么循环10次就是240Bytes<br>-不要直接访问gameobject的tag属性。比如if (go.tag == “human”)最好换成if (go.CompareTag (“human”))。因为访问物体的tag属性会在堆上额外的分配空间。如果在循环中这么处理，留下的垃圾就可想而知了。<br>-对象池。 重复使用<br>-结构体替代类</p>
+<p><strong>2.减少与Unity底层（C++）的交互</strong><br>这一部分主要是针对CPU以及代码性能优化，Unity是用C++写的， 开发写的脚本用C# ，交互会消耗性能。C#是由mono运行时托管的。而功能是底层引擎的C++实现的，“游戏脚本”中的功能实现都离不开对底层代码的调用。比如：</p>
+<ul>
+<li>只调用一次GetComponent方法，只获取一次Transform属性用变量保存…..</li>
+</ul>
+<ul>
+<li>善于使用OnBecameVisible()和OnBecameVisible(),来控制物体的update()函数的执行以减少开销</li>
+<li>使用内建的数组，比如用Vector3.zero而不是new Vector(0, 0, 0);</li>
+<li>用ref ，值类型的参数都是复制到形参的，ref可以优化脚本性能</li>
+</ul>
+<p>其实真的要去探究代码上优化的东西，还是有很多需要说的，但是主要指出方向怕自己忘记了，日后自己再研究补充吧！</p>
+<p>Simonyxy</p>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/assets/img/zhifubao.jpg">
+                      <span class="reward-type">支付宝</span>
+                    </div>
+                    
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/assets/img/weixin.jpg">
+                      <span class="reward-type">微信</span>
+                    </div>
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">UI</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Unity学习</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2020/03/09/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E6%97%B6%E5%80%99%E7%9A%84%E4%BB%A3%E7%A0%81%E4%BC%98%E5%8C%96/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2020/02/07/UGUI%E6%8F%92%E4%BB%B6%EF%BC%8C%E4%BB%A5%E5%8F%8AUGUI%E5%92%8CNGUI/" class="archive-article-date">
-  	<time datetime="2020-02-06T17:02:39.882Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-02-07</time>
-</a>
+<nav id="article-nav">
+  
+    <a href="/2020/03/09/%E5%A6%82%E4%BD%95%E5%88%87%E6%8D%A2%E5%9C%BA%E6%99%AF%E7%9A%84%E6%97%B6%E5%80%99%E4%B8%8D%E5%88%A0%E9%99%A4%E5%AF%B9%E8%B1%A1%E6%B1%A0%E5%92%8CGameManager/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          重复切换场景的时候不删除对象池和GameManager
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2020/02/29/unity%E5%86%85%E5%AD%98/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Unity的内存管理</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/02/07/UGUI%E6%8F%92%E4%BB%B6%EF%BC%8C%E4%BB%A5%E5%8F%8AUGUI%E5%92%8CNGUI/">自写UGUI插件，以及对比NGUI</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">UI</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
+        
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#unity-代码上的优化"><span class="toc-number">1.</span> <span class="toc-text">unity 代码上的优化</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-减少GC（减少引用）"><span class="toc-number">1.1.</span> <span class="toc-text">1.减少GC（减少引用）</span></a></li></ol></li></ol>
+                    </div>
+                </span>
+            </div>
         </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
+        
+    </div>
+</aside>
+
+
+
   
   
-    </div></section>
   
 
-    
+  
+
+  
+
+  
 
 
           </div>
@@ -261,9 +384,9 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: false,
 		toc_hide_index: true,
