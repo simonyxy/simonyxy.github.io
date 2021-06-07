@@ -6,28 +6,18 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>探究SetActive及优化 | Simon&#39;s Blog</title>
+  <title>unity editor接触思路 | Simon&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="关于SetActive优化目的SetActive 应该是在用unity开发的当中使用最多的一个方法之一 在ui中使用可能会更多 为了应对各种各样的需求 我们可能会在代码中使用大量的 SetActive(true) SetActive(false)">
+  <meta name="description" content="前言因为工作的需要，给项目统一更换prefab字体，查找弃用大图，层级点击检测的三个工具。">
 <meta name="keywords" content="UI">
 <meta property="og:type" content="article">
-<meta property="og:title" content="探究SetActive及优化">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;02&#x2F;07&#x2F;%E6%8E%A2%E7%A9%B6SetActive%E5%8F%8A%E4%BC%98%E5%8C%96&#x2F;index.html">
+<meta property="og:title" content="unity editor接触思路">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2021&#x2F;06&#x2F;08&#x2F;editor%E5%BC%80%E5%8F%91%E6%80%9D%E8%B7%AF&#x2F;index.html">
 <meta property="og:site_name" content="Simon&#39;s Blog">
-<meta property="og:description" content="关于SetActive优化目的SetActive 应该是在用unity开发的当中使用最多的一个方法之一 在ui中使用可能会更多 为了应对各种各样的需求 我们可能会在代码中使用大量的 SetActive(true) SetActive(false)">
+<meta property="og:description" content="前言因为工作的需要，给项目统一更换prefab字体，查找弃用大图，层级点击检测的三个工具。">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;assets&#x2F;img&#x2F;UI_3.jpg">
-<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;assets&#x2F;img&#x2F;UI_4.jpg">
-<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;assets&#x2F;img&#x2F;UI_5.jpg">
-<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;assets&#x2F;img&#x2F;UI_6.png">
-<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;assets&#x2F;img&#x2F;UI_7.png">
-<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;assets&#x2F;img&#x2F;UI_8.png">
-<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;assets&#x2F;img&#x2F;UI_9.png">
-<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;assets&#x2F;img&#x2F;UI_10.png">
-<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;assets&#x2F;img&#x2F;UI_11.png">
-<meta property="og:updated_time" content="2020-02-06T17:43:34.078Z">
+<meta property="og:updated_time" content="2021-06-07T17:01:33.945Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;assets&#x2F;img&#x2F;UI_3.jpg">
   
     <link rel="alternative" href="/atom.xml" title="Simon&#39;s Blog" type="application/atom+xml">
   
@@ -159,37 +149,43 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-探究SetActive及优化" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-editor开发思路" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      探究SetActive及优化
+      unity editor接触思路
     </h1>
   
 
         
-        <a href="/2020/02/07/%E6%8E%A2%E7%A9%B6SetActive%E5%8F%8A%E4%BC%98%E5%8C%96/" class="archive-article-date">
-  	<time datetime="2020-02-06T17:30:18.077Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-02-07</time>
+        <a href="/2021/06/08/editor%E5%BC%80%E5%8F%91%E6%80%9D%E8%B7%AF/" class="archive-article-date">
+  	<time datetime="2021-06-07T17:12:50.956Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-06-08</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="关于SetActive"><a href="#关于SetActive" class="headerlink" title="关于SetActive"></a>关于SetActive</h1><p>优化目的<br>SetActive 应该是在用unity开发的当中使用最多的一个方法之一 在ui中使用可能会更多 为了应对各种各样的需求 我们可能会在代码中使用大量的 SetActive(true) SetActive(false)</p>
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>因为工作的需要，给项目统一更换prefab字体，查找弃用大图，层级点击检测的三个工具。</p>
 <a id="more"></a>
-<h1 id="是否有更高效的代替方法？"><a href="#是否有更高效的代替方法？" class="headerlink" title="是否有更高效的代替方法？"></a>是否有更高效的代替方法？</h1><p>三种隐藏UI的方法：<br>1.SetActive（）<br>2.Transform移动<br>3.canvasGroup </p>
-<h1 id="1-SetActive分析"><a href="#1-SetActive分析" class="headerlink" title="1.SetActive分析"></a>1.SetActive分析</h1><p> <img src="/assets/img/UI_3.jpg" alt="avatar"><br>\用luaProflier 可以看到.SetActive消耗 产生（4KB）CG  lua函数调用时间0.14ms lua函数消耗0.000139s</p>
-<p>接下来用Transform移动<br><img src="/assets/img/UI_4.jpg" alt="avatar"><br>\用luaProflier 可以看到.Transform移动消耗 产生0 CG  lua函数调用时间0.07ms lua函数消耗0.000071s</p>
-<p>再接下来用canvasGroup<br><img src="/assets/img/UI_5.jpg" alt="avatar"><br>\用Proflier 可以看到canvasGroup消耗 产生0 CG  函数调用时间0.05ms </p>
-<p>根据上面图显示消耗时间canvasGroup&lt; Transform移动&lt; SetActive（）</p>
-<p>建议隐藏红点或button等小组件可以用SetActive（）<br>小界面panel可以用canvasGrou.alpha = 0隐藏<br>canvasGrou的Alpha由0设为1的时候，并不会让自己活着子节点中的脚本执行。</p>
-<p>为了正确了解SetActive为什么会产生GC用C#模拟一下一个界面要SetActive 20次情况<br><img src="/assets/img/UI_6.png" alt="avatar"><br><img src="/assets/img/UI_7.png" alt="avatar"><br><img src="/assets/img/UI_8.png" alt="avatar"></p>
-<p>还会蛮整齐GC的 这就是 为什么网上大佬们都不建议用setactive这个方法 在每次使用的时候会遍历这个实体上所有继承MonoBehaviour的脚本调用OnEnable 因为Image继承的MaskableGraphic 下图可以发现 写了方法算上基类的方法产生GC。<br><img src="/assets/img/UI_9.png" alt="avatar"></p>
-<p>重点来了我手贱又在这个image下挂了一个image 如下<br><img src="/assets/img/UI_10.png" alt="avatar"><br>最终结果：<br><img src="/assets/img/UI_11.png" alt="avatar"><br>父物体在使用SetActive时 也会调用子物体的GameObject.Activate和GameObject.Deactivate所以在做ui时 一个panel下挂载很多的image 调用这个panel的SetActive 其实基本等同于调用这个物体上每一个子物体的SetActive 并在每次使用的时候会遍历这个实体上所有继承MonoBehaviour的脚本带来大量的GC。</p>
+<h1 id="前言-1"><a href="#前言-1" class="headerlink" title="前言"></a>前言</h1><p>如果是需要查找Unity资源中的某些内容，其实是有一个大概的方向的。当然，前提是对Unity.Editor 和 OnGUI方法有一定了解，好去编辑 编辑窗口<br>[MenuItem]类。这个可以unity中扩展编辑器的方法，声明在工具代码的头部<br>其次是EditorWindow类，用来创造一个Window界面。声明的方法也是固定的<br>OnGUI方法中写声明的Window中的工具，<br>EditorGUI,EditorGUILayout,EditorUtility，GUILayout ,这三个类里面会有UI工具和方法，用作输入和显示<br>要注意这三个类，如果需要一些反馈的返回值，比如scollView的位置，要把返回值变量申明为全局的，不然返回值是无法实时反馈的。</p>
+<h1 id="AssetDataBase类"><a href="#AssetDataBase类" class="headerlink" title="AssetDataBase类"></a>AssetDataBase类</h1><p>unity中对每一个类型的组件的每一个资源都会生成一个.meta文件，.meta文件是记录这个文件的guid，也就是说每个prefab，每个文件都会有一个唯一的guid。fileID是本地的文件id，在记录在每一个prefab中内部的引用关系。然后在.prefab文件中会记录prefab对guid和fileID的引用，所以经常会有联合开发项目的一些引用的丢失，经常会是因为.meta文件没有上传导致的prefab的guid引用丢失。或者是因为更名后.meta文件新生成导致guid引用失败。<br>那么guid和编辑器工具的开发或者说和assetDataBase有啥关系。</p>
+<p>官网的API 对 AssetDataBase定义是“An Interface for accessing assets and performing operations on assets.”</p>
+<p>就是对资源修改管理和控制的API</p>
+<p>既然GUID是标识一个资源文件的唯一标识符，那么我们当然可以去通过这个GUID和AssetDataBase来查找和修改资源。那么资源管理的工具可就不要太简单了，只要利用AssetDataBase的API想办批量获得项目资源遍历或者通过GUID识别特定的资源就可以拿到想要的资源了。<br>后续通过unity的Object类，比如一些GetComonent&lt;&gt;的方法去对资源完成修改或者识别保存就可以了。</p>
+<p>当然如果想要提高工具效率，我个人建议是直接使用正则去匹配prefab中的内容，而不是直接AssetDataBase 和 Object。</p>
+<h1 id="Application-类，可以获得当前unity-运行状态的数据。比如"><a href="#Application-类，可以获得当前unity-运行状态的数据。比如" class="headerlink" title="[Application]类，可以获得当前unity 运行状态的数据。比如"></a>[Application]类，可以获得当前unity 运行状态的数据。比如</h1><p>是否在运行状态是否在后台运行等，这可以作为一个辅助的工具</p>
+<h1 id="Excel-类和Cells类，这些都是可以用来读取其他类型类型脚本的工具，具体需要的时候去查查吧"><a href="#Excel-类和Cells类，这些都是可以用来读取其他类型类型脚本的工具，具体需要的时候去查查吧" class="headerlink" title="[Excel]类和Cells类，这些都是可以用来读取其他类型类型脚本的工具，具体需要的时候去查查吧~"></a>[Excel]类和Cells类，这些都是可以用来读取其他类型类型脚本的工具，具体需要的时候去查查吧~</h1><p>1.一个整体的思路，已在项目中完成的工具其实主要的整体思想都是相似的</p>
+<h1 id="整体思路："><a href="#整体思路：" class="headerlink" title="整体思路："></a>整体思路：</h1><p>1.UnityEditor类中对项目资源进行一系列操作，然后通过unity内置类保存或者通过UnityEditor类中的方法去对unity进行显示操作</p>
+<p>强调：UnityEditor类非常有用，可以多去研究下</p>
+<p>1.用于资源管理，比如AssetDataBase可以让我们对项目Project中的资源进行管理，和通过GUID对Prefab的获取和转换或者加载物体<br>2.用于帮助我们在unity操作界面上进行需要需求的操作，比如可用于显示Inspector的Select类。EditorGUIUtility可以用于操作检视面板上的</p>
+<p>3.用于对项目内所有物体修改的方法。比如PrefabUtility可以用于保存修改后的预制体，或者在预制体和物体中添加组件等</p>
+<p>辅助：<br>prefab，GUID,.META 等文件里面存放的内容都是可读的，其实也只是保存物体的信息，很多时候我们不用去获得物体，直接用IO和正则能很大提高效率，特别是项目资源特别多的时候。</p>
+<p>共勉~~</p>
+<p>作者：Simon YXY</p>
 
       
 
@@ -290,7 +286,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2020/02/07/%E6%8E%A2%E7%A9%B6SetActive%E5%8F%8A%E4%BC%98%E5%8C%96/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2021/06/08/editor%E5%BC%80%E5%8F%91%E6%80%9D%E8%B7%AF/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -304,18 +300,9 @@
   
 <nav id="article-nav">
   
-    <a href="/2020/02/29/unity%E5%86%85%E5%AD%98/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          Unity的内存管理
-        
-      </div>
-    </a>
   
-  
-    <a href="/2020/02/07/UGUI%E6%8F%92%E4%BB%B6%EF%BC%8C%E4%BB%A5%E5%8F%8AUGUI%E5%92%8CNGUI/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">自写UGUI插件，以及对比NGUI</div>
+    <a href="/2021/06/08/%E6%95%B0%E6%8D%AE%E5%BC%82%E6%AD%A5%E5%8A%A0%E8%BD%BD%20%E5%92%8C%20%E8%B5%84%E6%BA%90%E5%BC%82%E6%AD%A5%E5%8A%A0%E8%BD%BD%20%E5%9C%A8%E7%95%8C%E9%9D%A2%E4%B8%AD%E5%90%8C%E6%97%B6%E8%BF%9B%E8%A1%8C%E7%9A%84%E5%BB%BA%E8%AE%AE/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">数据异步加载 和 资源异步加载 在界面中同时进行的建议</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -342,7 +329,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#关于SetActive"><span class="toc-number">1.</span> <span class="toc-text">关于SetActive</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#是否有更高效的代替方法？"><span class="toc-number">2.</span> <span class="toc-text">是否有更高效的代替方法？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1-SetActive分析"><span class="toc-number">3.</span> <span class="toc-text">1.SetActive分析</span></a></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#前言-1"><span class="toc-number">2.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#AssetDataBase类"><span class="toc-number">3.</span> <span class="toc-text">AssetDataBase类</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Application-类，可以获得当前unity-运行状态的数据。比如"><span class="toc-number">4.</span> <span class="toc-text">[Application]类，可以获得当前unity 运行状态的数据。比如</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Excel-类和Cells类，这些都是可以用来读取其他类型类型脚本的工具，具体需要的时候去查查吧"><span class="toc-number">5.</span> <span class="toc-text">[Excel]类和Cells类，这些都是可以用来读取其他类型类型脚本的工具，具体需要的时候去查查吧~</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#整体思路："><span class="toc-number">6.</span> <span class="toc-text">整体思路：</span></a></li></ol>
                     </div>
                 </span>
             </div>
