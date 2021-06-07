@@ -149,6 +149,225 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-渲染学习之道" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/06/08/%E6%B8%B2%E6%9F%93%E5%AD%A6%E4%B9%A0%E4%B9%8B%E9%81%93/">shader学习顺序</a>
+    </h1>
+  
+
+        
+        <a href="/2021/06/08/%E6%B8%B2%E6%9F%93%E5%AD%A6%E4%B9%A0%E4%B9%8B%E9%81%93/" class="archive-article-date">
+  	<time datetime="2021-06-07T17:31:59.132Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-06-08</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p><a href="https://www.sohu.com/a/322225401_650579">https://www.sohu.com/a/322225401_650579</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/105217655">https://zhuanlan.zhihu.com/p/105217655</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/137780634">https://zhuanlan.zhihu.com/p/137780634</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/30879777">https://zhuanlan.zhihu.com/p/30879777</a>         <a href="https://www.zhihu.com/column/c_140010238">https://www.zhihu.com/column/c_140010238</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/80704313">https://zhuanlan.zhihu.com/p/80704313</a><br><a href="https://zhuanlan.zhihu.com/p/31117091">https://zhuanlan.zhihu.com/p/31117091</a><br><a href="https://www.zhihu.com/column/shader-graph">https://www.zhihu.com/column/shader-graph</a></p>
+<p>PBR<br><a href="https://zhuanlan.zhihu.com/p/302348586">https://zhuanlan.zhihu.com/p/302348586</a><br><a href="https://zhuanlan.zhihu.com/p/121719442">https://zhuanlan.zhihu.com/p/121719442</a><br><a href="https://zhuanlan.zhihu.com/p/143718157">https://zhuanlan.zhihu.com/p/143718157</a><br><a href="https://zhuanlan.zhihu.com/p/70286099">https://zhuanlan.zhihu.com/p/70286099</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/112120206">https://zhuanlan.zhihu.com/p/112120206</a><br><a href="https://gameinstitute.qq.com/community/detail/123220">https://gameinstitute.qq.com/community/detail/123220</a></p>
+<p>渲染分析<br><a href="https://zhuanlan.zhihu.com/p/266850390">https://zhuanlan.zhihu.com/p/266850390</a><br><a href="https://zhuanlan.zhihu.com/p/327905754">https://zhuanlan.zhihu.com/p/327905754</a><br><a href="https://zhuanlan.zhihu.com/p/316138540">https://zhuanlan.zhihu.com/p/316138540</a><br><a href="https://zhuanlan.zhihu.com/p/260824391">https://zhuanlan.zhihu.com/p/260824391</a><br><a href="https://mp.weixin.qq.com/s/eXHgNkF4k0ivcc7_thdbkw">https://mp.weixin.qq.com/s/eXHgNkF4k0ivcc7_thdbkw</a></p>
+<p>移动端适配<br><a href="https://zhuanlan.zhihu.com/p/145189072">https://zhuanlan.zhihu.com/p/145189072</a><br><a href="http://www.gamelook.com.cn/2020/12/405959">http://www.gamelook.com.cn/2020/12/405959</a><br><a href="http://www.gamelook.com.cn/2020/12/407368">http://www.gamelook.com.cn/2020/12/407368</a><br><a href="https://zhuanlan.zhihu.com/p/130898753">https://zhuanlan.zhihu.com/p/130898753</a></p>
+<p>十年TA<br><a href="https://zhuanlan.zhihu.com/p/56243763">https://zhuanlan.zhihu.com/p/56243763</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">shader</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2021/06/08/%E6%B8%B2%E6%9F%93%E5%AD%A6%E4%B9%A0%E4%B9%8B%E9%81%93/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-有限状态机" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/06/08/%E6%9C%89%E9%99%90%E7%8A%B6%E6%80%81%E6%9C%BA/">有限状态机</a>
+    </h1>
+  
+
+        
+        <a href="/2021/06/08/%E6%9C%89%E9%99%90%E7%8A%B6%E6%80%81%E6%9C%BA/" class="archive-article-date">
+  	<time datetime="2021-06-07T17:30:56.650Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-06-08</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>根据理解自己写了一个有限状态机</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">unity代码</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2021/06/08/%E6%9C%89%E9%99%90%E7%8A%B6%E6%80%81%E6%9C%BA/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-UIClipAble" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/06/08/UIClipAble/">UIClipAble</a>
+    </h1>
+  
+
+        
+        <a href="/2021/06/08/UIClipAble/" class="archive-article-date">
+  	<time datetime="2021-06-07T17:27:04.487Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-06-08</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="不适合用Stencil裁剪时，使用Rect来裁剪特效的方式"><a href="#不适合用Stencil裁剪时，使用Rect来裁剪特效的方式" class="headerlink" title="不适合用Stencil裁剪时，使用Rect来裁剪特效的方式"></a>不适合用Stencil裁剪时，使用Rect来裁剪特效的方式</h3><h2 id="当然这个方法比较消耗性能，因为需要获得子物体的所有的界面重新去渲染他的Renderer，但是目前没有想到更好的办法"><a href="#当然这个方法比较消耗性能，因为需要获得子物体的所有的界面重新去渲染他的Renderer，但是目前没有想到更好的办法" class="headerlink" title="当然这个方法比较消耗性能，因为需要获得子物体的所有的界面重新去渲染他的Renderer，但是目前没有想到更好的办法"></a>当然这个方法比较消耗性能，因为需要获得子物体的所有的界面重新去渲染他的Renderer，但是目前没有想到更好的办法</h2><h2 id="基本上要用于有特别多子物体的组件去做消耗，Scroll-View下面会是一个很好的选择"><a href="#基本上要用于有特别多子物体的组件去做消耗，Scroll-View下面会是一个很好的选择" class="headerlink" title="基本上要用于有特别多子物体的组件去做消耗，Scroll View下面会是一个很好的选择~"></a>基本上要用于有特别多子物体的组件去做消耗，Scroll View下面会是一个很好的选择~</h2><h1 id="MenuItem-“Tool-现实点中-GameObject-amp-w”-后面的自定义快捷键加在后面，可以在百度搜到！！！！"><a href="#MenuItem-“Tool-现实点中-GameObject-amp-w”-后面的自定义快捷键加在后面，可以在百度搜到！！！！" class="headerlink" title="[MenuItem(“Tool/现实点中 GameObject #&amp;w”)]   后面的自定义快捷键加在后面，可以在百度搜到！！！！"></a>[MenuItem(“Tool/现实点中 GameObject #&amp;w”)]   后面的自定义快捷键加在后面，可以在百度搜到！！！！</h1><h1 id="unity自带的查看在Preferences-里面的keys"><a href="#unity自带的查看在Preferences-里面的keys" class="headerlink" title="unity自带的查看在Preferences 里面的keys"></a>unity自带的查看在Preferences 里面的keys</h1><figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//添加到组件，获取Transform 和Shader </span></span><br><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line">[<span class="meta">ExecuteInEditMode</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">UIClipAble</span>:<span class="title">MonoBehaviour</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">readonly</span> <span class="keyword">int</span> clipRectId = Shader.PropertyToID(<span class="string">"_ClipRect"</span>);</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">readonly</span> <span class="keyword">int</span> opClipId   = Shader.PropertyToID(<span class="string">"_ClipOpen"</span>);</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">readonly</span> Vector3[] corners = <span class="keyword">new</span> Vector3[<span class="number">4</span>];</span><br><span class="line"></span><br><span class="line">    RectTransform mask;</span><br><span class="line">    MaterialPropertyBlock materialBlock;</span><br><span class="line">    Renderer[] renderers;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">OnEnable</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        materialBlock = <span class="keyword">new</span> MaterialPropertyBlock();</span><br><span class="line">        renderers = GetComponentsInChildren&lt;Renderer&gt;();</span><br><span class="line">        ResetMask();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">OnDisable</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        mask = mask ?? GetComponent&lt;RectTransform&gt;();</span><br><span class="line">        <span class="keyword">if</span>(mask != <span class="literal">null</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            materialBlock.SetFloat(opClipId,<span class="number">0</span>);</span><br><span class="line">            <span class="keyword">foreach</span>(Renderer renderer <span class="keyword">in</span> renderers)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">if</span>(renderer != <span class="literal">null</span>)</span><br><span class="line">                    renderer.SetPropertyBlock(materialBlock);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">ResetMask</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        mask = mask ?? GetComponent&lt;RectTransform&gt;();</span><br><span class="line">        <span class="keyword">if</span>(mask != <span class="literal">null</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            mask.GetWorldCorners(corners);</span><br><span class="line">            Vector4 clipRect = <span class="keyword">new</span> Vector4(corners[<span class="number">0</span>].x , corners[<span class="number">0</span>].y,corners[<span class="number">2</span>].x,corners[<span class="number">2</span>].y);</span><br><span class="line">            materialBlock.SetVector(clipRectId,clipRect);</span><br><span class="line">            materialBlock.SetFloat(opClipId,<span class="number">1</span>);</span><br><span class="line">            <span class="keyword">foreach</span>(Renderer renderer <span class="keyword">in</span> renderers)</span><br><span class="line">            &#123;</span><br><span class="line">                renderer.SetPropertyBlock(materialBlock);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2021/06/08/UIClipAble/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-editor开发思路" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -667,229 +886,6 @@
 
 
   
-    <article id="post-UGUI插件，以及UGUI和NGUI" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/02/07/UGUI%E6%8F%92%E4%BB%B6%EF%BC%8C%E4%BB%A5%E5%8F%8AUGUI%E5%92%8CNGUI/">自写UGUI插件，以及对比NGUI</a>
-    </h1>
-  
-
-        
-        <a href="/2020/02/07/UGUI%E6%8F%92%E4%BB%B6%EF%BC%8C%E4%BB%A5%E5%8F%8AUGUI%E5%92%8CNGUI/" class="archive-article-date">
-  	<time datetime="2020-02-06T17:02:39.882Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-02-07</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><ol>
-<li>Mmorpg游戏里面的ui界面很多，每次要找都要一个一个点开比较麻烦
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">UI</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/02/07/UGUI%E6%8F%92%E4%BB%B6%EF%BC%8C%E4%BB%A5%E5%8F%8AUGUI%E5%92%8CNGUI/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-扩展对象池" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/26/%E6%89%A9%E5%B1%95%E5%AF%B9%E8%B1%A1%E6%B1%A0/">扩展对象池</a>
-    </h1>
-  
-
-        
-        <a href="/2019/11/26/%E6%89%A9%E5%B1%95%E5%AF%B9%E8%B1%A1%E6%B1%A0/" class="archive-article-date">
-  	<time datetime="2019-11-26T10:02:22.553Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-26</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>已经有了一个对象池的前提下，怎么样去完成切换武器的功能同时把这个东西加入到对象池中</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">我的射击游戏</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/11/26/%E6%89%A9%E5%B1%95%E5%AF%B9%E8%B1%A1%E6%B1%A0/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-对象池的生成" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/26/%E5%AF%B9%E8%B1%A1%E6%B1%A0%E7%9A%84%E7%94%9F%E6%88%90/">对于特殊弹药的对象池生成</a>
-    </h1>
-  
-
-        
-        <a href="/2019/11/26/%E5%AF%B9%E8%B1%A1%E6%B1%A0%E7%9A%84%E7%94%9F%E6%88%90/" class="archive-article-date">
-  	<time datetime="2019-11-26T09:35:15.560Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-26</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>前面的开发因为没有记录，就略了。后续有时间也许会补充，今天写我自己生成一个炸弹对象池的方法</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">我的射击游戏</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/11/26/%E5%AF%B9%E8%B1%A1%E6%B1%A0%E7%9A%84%E7%94%9F%E6%88%90/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &amp;raquo;</a>
@@ -995,6 +991,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Unity学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">我的射击游戏</a>
               </li>
              
@@ -1003,7 +1003,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Unity学习</a>
+                <a href="javascript:void(0)" class="js-tag color2">shader</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">unity代码</a>
               </li>
             
             <div class="clearfix"></div>

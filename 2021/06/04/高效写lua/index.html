@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="Simon&#39;s Blog">
 <meta property="og:description" content="前言对于Lua的一些编写总结">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2021-06-07T17:01:33.947Z">
+<meta property="og:updated_time" content="2021-06-07T17:25:33.741Z">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="/atom.xml" title="Simon&#39;s Blog" type="application/atom+xml">
@@ -172,10 +172,8 @@
         <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p><strong>对于Lua的一些编写总结</strong></p>
 <a id="more"></a>
 
-<h1 id="使用Local"><a href="#使用Local" class="headerlink" title="使用Local**"></a>使用Local**</h1><pre><code>自从Lua5.0后，Lua采用一种类似于寄存器的虚拟机模式。Lua用栈来存储其寄存器。每一个活动的函数，Lua都会为其分配一个栈，这个栈用来存储函数里面的活动记录。每一个函数的栈都可以存储至多250个寄存器，因为栈的长度是用8个比特表示的。
-有了这么多寄存器，Lua的预编译器能把所有的local变量存储在其中。这就是的Lua在获取local变量时其效率十分的高的原因。
-
-举个例子： 假设 a 和 b 为local变量，a = a + b 的预编译会产生一条指令：
+<p>使用Local**<br>    自从Lua5.0后，Lua采用一种类似于寄存器的虚拟机模式。Lua用栈来存储其寄存器。每一个活动的函数，Lua都会为其分配一个栈，这个栈用来存储函数里面的活动记录。每一个函数的栈都可以存储至多250个寄存器，因为栈的长度是用8个比特表示的。<br>    有了这么多寄存器，Lua的预编译器能把所有的local变量存储在其中。这就是的Lua在获取local变量时其效率十分的高的原因。</p>
+<pre><code>举个例子： 假设 a 和 b 为local变量，a = a + b 的预编译会产生一条指令：
 
 ;a是寄存器0 b是寄存器1
 ADD 0 0 1
@@ -187,7 +185,8 @@ GETGLOBAL  1 1    ;get b
 ADD        0 0 1  ;do add
 SETGLOBAL  0 0    ;set a
 
-PS: 全局变量（string, math等工具函数，自定义的全局变量）在引用过多的情况下，也考虑先在其作用域下用局部变量存储，这样在预编译期就只进行了一次GETGLOBAL操作</code></pre><h1 id="关于表（table）"><a href="#关于表（table）" class="headerlink" title="关于表（table）**"></a>关于表（table）**</h1><pre><code>表在Lua中使用十分频繁，因为表几乎代表了Lua的所有容器。所以了解Lua底层如何实现表，对我们编写Lua是有好处的。
+PS: 全局变量（string, math等工具函数，自定义的全局变量）在引用过多的情况下，也考虑先在其作用域下用局部变量存储，这样在预编译期就只进行了一次GETGLOBAL操作</code></pre><p>关于表（table）**</p>
+<pre><code>表在Lua中使用十分频繁，因为表几乎代表了Lua的所有容器。所以了解Lua底层如何实现表，对我们编写Lua是有好处的。
 Lua的表分为两个部分：数组（array）部分和哈希（hash）部分。数组部分包含所有从1到n的整数键，其他所有的键都存储在哈希部分中。
 哈希部分其实就是一个哈希表，哈希表的本质是一个数组，它利用哈希算法将键转化为数组下标，若下标有冲突（即同一个下标对应了两个不同的键），则它会将冲突的下标上创建一个链表，将不同的键串在这个链表上，这种解决冲突的方法叫做：链地址法。
 当我们把一个新键值赋给表时，若数组和哈希表已经满了，则会触发一个 再哈希（rehash）。再哈希的代价是高昂的。首先会在内存中分配一个新的长度的数组，然后将所有记录再全部哈希一边，将原来的记录转移到新数组中。新哈希表的长度是最接近于所有元素数目的2次方。
@@ -224,7 +223,8 @@ b = <span class="built_in">os</span>.<span class="built_in">clock</span>()
 <pre><code>所以，当需要创建非常多的小size的表时，应预先填充好表的大小。
 
 PS：在Unity中 C#与Lua的通信，例：用Vector3.zero, Vector3.one 代替 Vector3(0, 0, 0), Vector3(1, 1, 1)
-Vector3，Vector2等数据类型在Slua中会被转译成table，运用Unity中预定义好的Vector3等向量，同样可以避免Rehash的问题</code></pre><h1 id="关于字符串"><a href="#关于字符串" class="headerlink" title="关于字符串**"></a>关于字符串**</h1><pre><code>Lua在实现字符串类型与其他主流脚本有所不同。
+Vector3，Vector2等数据类型在Slua中会被转译成table，运用Unity中预定义好的Vector3等向量，同样可以避免Rehash的问题</code></pre><p>关于字符串**</p>
+<pre><code>Lua在实现字符串类型与其他主流脚本有所不同。
 第一，所有的字符串在Lua中都只储存一份拷贝。当新字符串出现时，Lua检查会否有其相同的拷贝，若没有则创建它，否则，指向这个拷贝。这可以使得字符串比较和表索引变得相当的快，因为比较字符串只需要检查引用是否一致即可；但是这也降低了创建字符串时的效率，因为Lua需要去查找比较一遍。
 第二，所有的字符串变量，只保存字符串引用，而不保存它的buffer(缓存)。这使得字符串的赋值变得十分高效。例如在Perl中，$x = $y，会将 $y 的 buffer 整个的复制到 $x 的 buffer 中，当字符串很长时，这个操作的代价将十分昂贵。而在Lua，同样的赋值，只复制引用，十分的高效。
 但是只保存引用会降低字符串连接时的速度。在Perl中，$s = $s . &apos;x&apos; 和 $s .= &apos; x &apos; 的效率差距惊人，前者将会获取整个 $s 的拷贝，并将 &apos; x &apos;  添加到它的末尾；而后者，将直接将 &apos; x &apos; 插入到 $x 的buffer末尾。
@@ -247,7 +247,8 @@ a = <span class="built_in">os</span>.<span class="built_in">clock</span>()
 <span class="keyword">local</span> s = <span class="built_in">table</span>.<span class="built_in">concat</span>(t, <span class="string">""</span>)   
 b = <span class="built_in">os</span>.<span class="built_in">clock</span>
 <span class="built_in">print</span>(b - a) <span class="comment">-- 0.07178</span></code></pre>
-<pre><code>所以：在大字符串连接中，我们应避免  .. 来进行字符串连接。应用 table 来模拟 buffer ，然后 concat 得到最终字符串。</code></pre><h1 id="3R原则"><a href="#3R原则" class="headerlink" title="3R原则"></a>3R原则</h1><pre><code>3R原则是：减量化（reducing），再利用（reusing）和再循环（recycling）三种原则的简称。
+<pre><code>所以：在大字符串连接中，我们应避免  .. 来进行字符串连接。应用 table 来模拟 buffer ，然后 concat 得到最终字符串。</code></pre><p>3R原则</p>
+<pre><code>3R原则是：减量化（reducing），再利用（reusing）和再循环（recycling）三种原则的简称。
 3R原则本是循环经济和环保的原则，但是其同样适用于Lua。
 Reducing
     有许多办法能够避免创建新对象和节约内存。例如：如果你的程序中使用了太多的表，你可以考虑换一种数据结构表示。
@@ -307,7 +308,8 @@ Recycling
     频繁的垃圾回收可能会降低程序的运行效率。
     我们可以通过Lua的 collectgarbage 函数来控制垃圾回收器。
     对于批处理的Lua程序来说，停止垃圾回收 collectgarbage(&quot;stop&quot;)会提高效率，因为批处理程序在结束时，内存将全部被释放。
-    对于垃圾回收器的步幅来说，实际上很难一概而论。更快幅度的垃圾会收回消耗更多CPU，但会释放更多内存，从而也降低CPU的分页时间。</code></pre><h1 id="堆栈溢出-当我们运行lua的时候，可能出现stack-overflow的报错，以下代码为例"><a href="#堆栈溢出-当我们运行lua的时候，可能出现stack-overflow的报错，以下代码为例" class="headerlink" title="堆栈溢出 当我们运行lua的时候，可能出现stack overflow的报错，以下代码为例"></a>堆栈溢出 当我们运行lua的时候，可能出现stack overflow的报错，以下代码为例</h1><pre><code class="lua"><span class="function"><span class="keyword">function</span> <span class="title">func</span><span class="params">(a)</span></span>
+    对于垃圾回收器的步幅来说，实际上很难一概而论。更快幅度的垃圾会收回消耗更多CPU，但会释放更多内存，从而也降低CPU的分页时间。</code></pre><p>堆栈溢出 当我们运行lua的时候，可能出现stack overflow的报错，以下代码为例</p>
+<pre><code class="lua"><span class="function"><span class="keyword">function</span> <span class="title">func</span><span class="params">(a)</span></span>
 
     a = a + <span class="number">1</span>
     <span class="keyword">if</span> a &gt; <span class="number">100000</span> <span class="keyword">then</span>
@@ -476,7 +478,7 @@ x =  func(x)</code></pre>
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#使用Local"><span class="toc-number">2.</span> <span class="toc-text">使用Local**</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#关于表（table）"><span class="toc-number">3.</span> <span class="toc-text">关于表（table）**</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#关于字符串"><span class="toc-number">4.</span> <span class="toc-text">关于字符串**</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3R原则"><span class="toc-number">5.</span> <span class="toc-text">3R原则</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#堆栈溢出-当我们运行lua的时候，可能出现stack-overflow的报错，以下代码为例"><span class="toc-number">6.</span> <span class="toc-text">堆栈溢出 当我们运行lua的时候，可能出现stack overflow的报错，以下代码为例</span></a></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li></ol>
                     </div>
                 </span>
             </div>
@@ -596,6 +598,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Unity学习</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">我的射击游戏</a>
               </li>
              
@@ -604,7 +610,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Unity学习</a>
+                <a href="javascript:void(0)" class="js-tag color2">shader</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">unity代码</a>
               </li>
             
             <div class="clearfix"></div>

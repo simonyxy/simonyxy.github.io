@@ -6,17 +6,15 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>5.【Lua面向对象设计——BaseClass】 | Simon&#39;s Blog</title>
+  <title>Tag: shader | Simon&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="下面我们来看一下BaseClass">
-<meta name="keywords" content="lua继承">
-<meta property="og:type" content="article">
-<meta property="og:title" content="5.【Lua面向对象设计——BaseClass】">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;26&#x2F;lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--BaseClass&#x2F;index.html">
+  <meta name="description" content="记录我的游戏生涯">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Simon&#39;s Blog">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;tags&#x2F;shader&#x2F;index.html">
 <meta property="og:site_name" content="Simon&#39;s Blog">
-<meta property="og:description" content="下面我们来看一下BaseClass">
+<meta property="og:description" content="记录我的游戏生涯">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2019-11-26T09:36:46.070Z">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="/atom.xml" title="Simon&#39;s Blog" type="application/atom+xml">
@@ -149,211 +147,60 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-lua面向对象设计--BaseClass" class="article article-type-post " itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
+            
   
-    <h1 class="article-title" itemprop="name">
-      5.【Lua面向对象设计——BaseClass】
+  
+    
+    
+      
+      
+      <section class="archives-wrap">
+        <div class="archive-year-wrap">
+          <a href="/archives/2021" class="archive-year">2021</a>
+        </div>
+        <div class="archives">
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      	<div class="article-meta">
+	      	<a href="/2021/06/08/%E6%B8%B2%E6%9F%93%E5%AD%A6%E4%B9%A0%E4%B9%8B%E9%81%93/" class="archive-article-date">
+  	<time datetime="2021-06-07T17:31:59.132Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-06-08</time>
+</a>
+        </div>
+    	 
+  
+    <h1 itemprop="name">
+      <a class="archive-article-title" href="/2021/06/08/%E6%B8%B2%E6%9F%93%E5%AD%A6%E4%B9%A0%E4%B9%8B%E9%81%93/">shader学习顺序</a>
     </h1>
   
 
-        
-        <a href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--BaseClass/" class="archive-article-date">
-  	<time datetime="2019-11-26T06:56:38.377Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-26</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>下面我们来看一下BaseClass</p>
-<a id="more"></a>
-<p>–保存类类型的虚表<br>–_class的结构如下：_class = { Class_A = vtbl_A, Class_B = vtbl_B}<br>local _class = {}</p>
-<p> –BaseClass(super)<br> –函数功能：创建一个super类的子类类型<br> –子类类型实现了New方法、设置了当前类的元表（包括<strong>index函数和</strong>newindex函数，用于索引操作，该操作实现了对虚表的索引）<br> –如果是继承自父类，那么虚表的元表的索引方法将会在父类super对应的vtbl中去查找键值</p>
-<p>function BaseClass(super)<br>    – 生成一个类类型,    实际上存放类信息<br>    local class_type = {}</p>
-<pre><code>-- 在创建对象的时候自动调用
--- 默认的两个属性
---class_type.__init = false
-class_type.__delete = false
-class_type.super = super
-
---!!!看此方法时，先跳过，看完BaseClass的其他定义后，再来看此&quot;成员函数
--- 创建接口
--- 子类型class_type创建实例对象的方法
-
-<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line">	class_type.New = <span class="function"><span class="keyword">function</span><span class="params">(...)</span></span></span><br><span class="line">		<span class="comment">-- 生成一个类对象</span></span><br><span class="line">		<span class="keyword">local</span> obj = &#123;&#125;</span><br><span class="line">		obj._class_type = class_type</span><br><span class="line"></span><br><span class="line">		<span class="comment">-- 在初始化之前注册基类方法</span></span><br><span class="line">		<span class="comment">-- 即引入基类class_type的虚表vtbl</span></span><br><span class="line">		<span class="built_in">setmetatable</span>(obj, &#123; <span class="built_in">__index</span> = _class[class_type] &#125;)</span><br><span class="line"></span><br><span class="line">		<span class="comment">-- 注册一个delete方法</span></span><br><span class="line">		<span class="keyword">if</span>(super <span class="keyword">and</span> <span class="keyword">not</span> super.DeleteMe) <span class="keyword">then</span></span><br><span class="line">			obj.DeleteMe = <span class="function"><span class="keyword">function</span><span class="params">(obj_self)</span></span></span><br><span class="line">				<span class="keyword">local</span> now_super = obj_self._class_type </span><br><span class="line">				<span class="keyword">while</span> now_super ~= <span class="literal">nil</span> <span class="keyword">do</span>	</span><br><span class="line">					<span class="keyword">if</span> now_super.__delete <span class="keyword">then</span></span><br><span class="line">						now_super.__delete(obj_self)</span><br><span class="line">					<span class="keyword">end</span></span><br><span class="line">					now_super = now_super.super</span><br><span class="line">				<span class="keyword">end</span></span><br><span class="line">			<span class="keyword">end</span></span><br><span class="line">		<span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">		<span class="comment">-- 调用初始化方法</span></span><br><span class="line">		class_type.__init(obj, ...)</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">return</span> obj</span><br><span class="line">	<span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">--class_type类型的虚表</span></span><br><span class="line">	<span class="keyword">local</span> vtbl = &#123;&#125;</span><br><span class="line">	<span class="comment">--在类类型的虚表中，为当前的类类型添加虚表，比如使用Layer = Layer or BaseClass() 创建了一个子类Layer，那么，此时类类型虚表中，会添加这么一项：_class = &#123; Class_A = vtbl_A, Class_B = vtbl_B, Layer = &#123;&#125;&#125;</span></span><br><span class="line">	_class[class_type] = vtbl</span><br><span class="line"></span><br><span class="line">	<span class="comment">-- 设置class_type的元表，给出访问索引函数和赋值索引函数</span></span><br><span class="line">	<span class="comment">-- 从赋值索引函数__newindex上可以看出，如果要往class_type类型的中添加属性，会在其虚表vtbl中实现这种键值的添加</span></span><br><span class="line">	<span class="comment">-- 比如Layer = BaseClass()后，通过Layer.position = &#123;x = 0.0, y = 0.0&#125; 往Layer中添加一个键值，此时该键值会添加在Layer类型所对应的虚表中，此时虚表变为：_class = &#123; Class_A = vtbl_A, Class_B = vtbl_B, Layer = &#123; position = &#123;x = 0.0, y = 0.0&#125; &#125;&#125;</span></span><br><span class="line">	<span class="comment">-- 于是这么做的好处就现象出来了，类型Layer自身的键值不会发生改变，因此可以做为一个“稳定”的基类去派生子类，而所有的变化，都体现在Layer所对应的虚表vtbl_Layer中，这样的设计，封装了变化，也便于继承的实现</span></span><br><span class="line">	<span class="built_in">setmetatable</span>(class_type, &#123;<span class="built_in">__newindex</span> =</span><br><span class="line">		<span class="function"><span class="keyword">function</span><span class="params">(t,k,v)</span></span></span><br><span class="line">			vtbl[k] = v</span><br><span class="line">		<span class="keyword">end</span></span><br><span class="line">		, </span><br><span class="line">		<span class="built_in">__index</span> = vtbl, <span class="comment">--For call parent method</span></span><br><span class="line">	&#125;)</span><br><span class="line"></span><br><span class="line">	<span class="comment">--如果是通过super派生子类，那么vtbl的访问索引将在super的vtbl中查找</span></span><br><span class="line">	<span class="keyword">if</span> super <span class="keyword">then</span></span><br><span class="line">		<span class="built_in">setmetatable</span>(vtbl, &#123;<span class="built_in">__index</span> =</span><br><span class="line">			<span class="function"><span class="keyword">function</span><span class="params">(t,k)</span></span></span><br><span class="line">				<span class="keyword">local</span> ret = _class[super][k]</span><br><span class="line">				<span class="comment">--do not do accept, make hot update work right!</span></span><br><span class="line">				<span class="comment">--vtbl[k] = ret</span></span><br><span class="line">				<span class="keyword">return</span> ret</span><br><span class="line">			<span class="keyword">end</span></span><br><span class="line">		&#125;)</span><br><span class="line">	<span class="keyword">end</span></span><br><span class="line"> </span><br><span class="line">	<span class="keyword">return</span> class_type</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure></code></pre><p>可能很多人看了之后还会有非常看不明白的地方。但是作为新手，只要明白以下几即可(红色字体着重理解)：<br>BaseClass提供了一个从已有类派生子类的方法。<br>为每个类型提供一个虚表（_class中存储这些虚表）<br>创建一个新的table（这里表现为class_type）作为新的类类型。<br>申明并定义class_type的属性class_type.<strong>delete class_type.super；<br>声明并定义class_type的方法class_type.New<br>配置class_type类型对应的虚表：vtbl<br>设置class_type的元表的访问索引和赋值索引<br>处理class_type类型从父类继承的属性和方法（通过设置class_type的虚表vtbl的元表访问索引来实现）<br>特别值得注意的是class_type的New方法——该方法表示从class_type类型创建一个实例obj，并调用class_type的</strong>init方法来初始化obj对象；（也就是说当使用Layer = Layer or BaseClass()创建一个新类型的时候，需要实现Layer:<strong>init(…)方法；<br>创建一个table(实际中是local obj = {})<br>设置obj对象元表，其访问索引方法</strong>index 从class_type的虚表vtbl中查找；<br>注册了一个delete方法，通过自底向上的方式析构对象；<br>使用__init方法来初始化；</p>
-<p>我们平常用的最多的ctrl就是直接由BaseClass创建的基类，下面一个小例子<br>TestCtrl = TestCtrl or BaseClass()  –如果不存在则创建一个TestCtrl类并实例化<br>而我们同样使用比较多的view是由BaseView派生的<br>TestView = TestView or BaseClass(BaseView) –创建一个BaseView的子类<br>有时候我们可以创建一个由BaseWindowsView派生的子类<br>TestView = TestView or BaseClass(BaseWindowView) –创建一个BaseWindowView的子类</p>
-<p>而BaseWindowView是继承自BaseViewMainFrame<br>BaseWindowView = BaseWindowView or BaseClass(BaseViewMainFrame)<br>BaseViewMainFrame又是继承自BaseView类。所以BaseClass只是一个实现继承的接口（并不是所有类的基类）</p>
-
-      
-
-      
-        <div class="page-reward">
-          <a href="javascript:;" class="page-reward-btn tooltip-top">
-            <div class="tooltip tooltip-east">
-            <span class="tooltip-item">
-              赏
-            </span>
-            <span class="tooltip-content">
-              <span class="tooltip-text">
-                <span class="tooltip-inner">
-                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
-                  <div class="reward-box">
-                    
-                    <div class="reward-box-item">
-                      <img class="reward-img" src="/assets/img/zhifubao.jpg">
-                      <span class="reward-type">支付宝</span>
-                    </div>
-                    
-                    
-                    <div class="reward-box-item">
-                      <img class="reward-img" src="/assets/img/weixin.jpg">
-                      <span class="reward-type">微信</span>
-                    </div>
-                    
-                  </div>
-                </span>
-              </span>
-            </span>
-          </div>
-          </a>
-        </div>
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
+        <div class="article-info info-on-right">
+          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">lua继承</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">shader</a>
         		</li>
       		
 		</ul>
 	</div>
 
-      
+          
 
-      
-
-      
-        
-<div class="share-btn share-icons tooltip-left">
-  <div class="tooltip tooltip-east">
-    <span class="tooltip-item">
-      <a href="javascript:;" class="share-sns share-outer">
-        <i class="icon icon-share"></i>
-      </a>
-    </span>
-    <span class="tooltip-content">
-      <div class="share-wrap">
-        <div class="share-icons">
-          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
-            <i class="icon icon-weibo"></i>
-          </a>
-          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
-            <i class="icon icon-weixin"></i>
-          </a>
-          <a class="qq share-sns" href="javascript:;" data-type="qq">
-            <i class="icon icon-qq"></i>
-          </a>
-          <a class="douban share-sns" href="javascript:;" data-type="douban">
-            <i class="icon icon-douban"></i>
-          </a>
-          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
-            <i class="icon icon-qzone"></i>
-          </a>
-          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
-            <i class="icon icon-facebook"></i>
-          </a>
-          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
-            <i class="icon icon-twitter"></i>
-          </a>
-          <a class="google share-sns" href="javascript:;" data-type="google">
-            <i class="icon icon-google"></i>
-          </a>
         </div>
-      </div>
-    </span>
-  </div>
-</div>
-
-<div class="page-modal wx-share js-wx-box">
-    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
-    <p>扫一扫，分享到微信</p>
-    <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--BaseClass/" alt="微信分享二维码">
-    </div>
-</div>
-
-<div class="mask js-mask"></div>
-      
-      <div class="clearfix"></div>
-    </div>
+        <div class="clearfix"></div>
+    </header>
   </div>
 </article>
-
-  
-<nav id="article-nav">
-  
-    <a href="/2019/11/26/lua%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1--%E7%BB%A7%E6%89%BF/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          4.【Lua面向对象设计——继承】
-        
-      </div>
-    </a>
   
   
-</nav>
-
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-        <div class="toc-container tooltip-left">
-            <i class="icon-font icon-category"></i>
-            <div class="tooltip tooltip-east">
-                <span class="tooltip-item">
-                </span>
-                <span class="tooltip-content">
-                    <div class="toc-article">
-                    目录，不存在的…
-                    </div>
-                </span>
-            </div>
-        </div>
-        
-    </div>
-</aside>
-
-
-
-  
-  
+    </div></section>
   
 
-  
-
-  
-
-  
+    
 
 
           </div>
@@ -376,9 +223,9 @@ class_type.super = super
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: true,
+		isPost: false,
 		isArchive: false,
-		isTag: false,
+		isTag: true,
 		isCategory: false,
 		open_in_new: false,
 		toc_hide_index: true,
